@@ -66,7 +66,7 @@ const Settings = () => {
       {isPaymentVisible && (
         <div className="ml-64 mt-2 text-sm">
           <h2 className="font-bold mt-2">Mpesa Phone Number</h2> 
-          <p className="mt-2 mb-4">Your mpesa phone number is <span className="font-bold">0723167757</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
+          <p className="mt-2 mb-4">Your Mpesa phone number is <span className="font-bold">0723167757</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
         </div>
       )}
       </div>
