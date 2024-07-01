@@ -9,7 +9,6 @@ const AddProducts = () => {
   const [activeInput, setActiveInput] = useState("title");
   const token = localStorage.getItem("neematoken")
 
-  console.log(token)
 
   const info = [
     { name: "title", type: "text" },
