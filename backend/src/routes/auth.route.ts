@@ -10,7 +10,7 @@ router.get('/auth/profile', isAuthenticated ,dashboard)
 router.get("/auth", isAuthenticated, (req: any, res: Response) => {
 
     if(req.user.isAdmin){
-        res.status(200).json({isAdmin: true, isAuthenticated: true})
+        return res.status(200).json({isAdmin: true, isAuthenticated: true})
     }
 
     res.status(200).json({isAdmin: false, isAuthenticated: true})

@@ -19,16 +19,21 @@ import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
 
 function App() {
-  const [authInfo, setAuthInfo] = useState({}) 
+  const [authInfo, setAuthInfo] = useState({})
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loggedIn = async () => {
       await axios.get("http://localhost:3001/api/auth", {
         headers: `Authorization: Bearer ${localStorage.getItem("neematoken")}`
-      }).then((res) => setAuthInfo(res.data))
+      }).then((res) =>{
+        setAuthInfo(res.data)
+        setLoading(false)
+      })
       .catch((err) => {
         console.log(err)
         // alert(err.message)
+        setLoading(false)
       })
     }
     loggedIn()
@@ -37,6 +42,9 @@ function App() {
 
 function RequireAdmin ({ children }) {
 
+  if(loading ) {
+    return <h1>Loading...</h1>
+  }
   if (!authInfo.isAdmin ) {
     return <Navigate to="/auth/login" replace />;
   }
@@ -44,6 +52,10 @@ function RequireAdmin ({ children }) {
 }
 
 function RequireAuth({ children }) {
+
+  if(loading ) {
+    return <h1>Loading...</h1>
+  }
   
   if (!authInfo.isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
