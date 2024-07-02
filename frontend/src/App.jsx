@@ -77,10 +77,4 @@ function RequireAuth({ children }) {
   );
 }
 
-
-// Higher-order component to protect routes
-
-
-// Higher-order component to protect admin routes
-
 export default App;

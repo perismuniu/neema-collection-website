@@ -77,13 +77,9 @@ export const login = (req: any, res: Response) => {
     })(req, res);
 };
 
-export const logout = (req: Request, res: Response) => {
-    res.cookie('session', '', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        expires: new Date(0),
-    });
-
+export const logout = (req: any, res: Response) => {
+    req.session = null;
+    req.logout(req.user);
     res.json({ message: 'Logged out' });
 };
 

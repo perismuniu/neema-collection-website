@@ -38,9 +38,11 @@ const Login = () => {
     dispatch(login(loginData));
   };
 
-  loggedInUser && loggedInUser.isAdmin === true
+  useEffect(() => {
+    loggedInUser && loggedInUser.isAdmin === true
     ? navigate("/dashboard")
     : navigate("/"); // If user is logged in, redirect to dashboard
+  }, [loggedInUser, navigate])
 
   return (
     <div className="bg-off-white bg-cover absolute inset-0 h-screen w-full text-lg">
