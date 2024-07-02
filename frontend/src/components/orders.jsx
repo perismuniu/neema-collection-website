@@ -11,13 +11,13 @@ const Orders = () => {
         const getOrders = async () => {
           setIsLoading(true);
         //   axios.defaults.withCredentials = true; // Set withCredentials to true
-          const res = await axios.get('http://localhost:3001/api/orders', {
-            withCredentials: true
-          })
-           .then(res => {
-              setIsLoading(false);
-              return res.data;
+            const res = await axios.get('http://localhost:3001/api/orders', {
+              headers: `Bearer ${localStorage.getItem("neemaToken")}`
             })
+             .then(res => {
+                setIsLoading(false);
+                return res.data;
+              })
            .catch(err => {
               setIsLoading(false);
               alert(err.message);
