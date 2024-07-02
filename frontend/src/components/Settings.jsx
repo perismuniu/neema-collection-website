@@ -12,7 +12,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="pt-10 bg-gray-light w-full min-h-screen absolute lg:px-52 md:px-40">
+    <div className="pt-10 bg-gray-light w-full min-h-screen  lg:px-52 md:px-36">
       <div className="flex flex-col">
         <h1 className="font-bold ml-4">Account Settings</h1>
         <button 
@@ -21,7 +21,7 @@ const Settings = () => {
           {isVisible ? 'Hide Account Settings' : 'Show Account Settings'}
         </button>
         {isVisible && (
-          <div className="ml-64 mt-2 text-sm">
+          <div className="ml-16 lg:ml-68 mt-2 text-sm ">
             <h2 className="font-bold mt-2">Names</h2> 
             <p className="mt-2">Your names are <span className="font-bold">Peris Muniu</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
             <h2 className="font-bold mt-2">Phone Number</h2> 
@@ -47,7 +47,7 @@ const Settings = () => {
                 />
               </div>
             </div>
-            <p className="mt-2">Can't remember your current password? <a href="#">Reset your password</a></p>
+            <p className="mt-2">Can&#39;t remember your current password? <a href="#">Reset your password</a></p>
             <button className="bg-gray text-white px-2 py-2 rounded font-bold mt-2">Save Password</button>
             <h2 className="mt-2 font-bold mb-4">Delete Account</h2>
             <p>Would you like to delete your account?</p>

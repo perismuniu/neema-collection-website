@@ -69,15 +69,10 @@ export const login = (req: any, res: Response) => {
             const token = jwt.sign({ sub: user._id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '1h' } as any);
             req.session.jwt = token;
 
-            // Set a cookie with the session ID
-            // res.cookie('sessionId', req.sessionID, {
-            //     httpOnly: true,
-            //     secure: false,
-            //     sameSite: 'lax',
-            //     maxAge: 3600000, // 1 hour
-            // });
+            // Remove password from user data
+      const userData = { ...user.toObject(), password: undefined, _v: undefined };
 
-            return res.status(200).json({ message: `user ${user.username} logged in`, token, isAdmin: user.isAdmin });
+            return res.status(200).json({ message: `user ${user.username} logged in`, token, isAdmin: user.isAdmin, userData });
         });
     })(req, res);
 };

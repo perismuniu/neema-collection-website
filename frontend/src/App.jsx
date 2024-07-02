@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
-import Login from "./components/login";
+import ConnectedLogin from "./components/login";
 import Navbar from "./components/Navbar2";
 import Homepage from "./components/Homepage";
 import Overview from "./components/dashboard/overview";
@@ -12,52 +12,26 @@ import Products from "./components/dashboard/products";
 import AddProducts from "./components/products/addProducts";
 import ProductList from "./components/products/productlist";
 import Checkout from "./components/Checkout";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
+import { useSelector } from "react-redux";
 
 function App() {
-  const [authInfo, setAuthInfo] = useState({})
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const loggedIn = async () => {
-      await axios.get("http://localhost:3001/api/auth", {
-        headers: `Authorization: Bearer ${localStorage.getItem("neematoken")}`
-      }).then((res) =>{
-        setAuthInfo(res.data)
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err)
-        // alert(err.message)
-        setLoading(false)
-      })
-    }
-    loggedIn()
-  }, [])
+  const user = useSelector(state => state.user)
 
 
 function RequireAdmin ({ children }) {
 
-  if(loading ) {
-    return <h1>Loading...</h1>
-  }
-  if (!authInfo.isAdmin ) {
+  if (!user.isAdmin ) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
 }
 
 function RequireAuth({ children }) {
-
-  if(loading ) {
-    return <h1>Loading...</h1>
-  }
   
-  if (!authInfo.isAuthenticated) {
+  if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
@@ -69,7 +43,7 @@ function RequireAuth({ children }) {
         <Navbar />
         <Routes>
           <Route path="/auth/signup" element={<Auth />} />
-          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/login" element={<ConnectedLogin />} />
           <Route path="/dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} >
             <Route
               index

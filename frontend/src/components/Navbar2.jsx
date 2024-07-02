@@ -6,6 +6,23 @@ import {Link} from "react-router-dom"
 
 const Navbar = () => {
   const [menuVisibility, setMenuVisibilty] = useState(false)
+  const userOptions = [{
+    name: "Profile",
+    link: "/user/profile"
+  },
+  {
+    name: "Orders",
+    link: "/user/orders"
+  },
+  {
+    name: "Settings",
+    link: "/user/settings"
+  },
+  {
+    name: "Logout",
+    link: "/user/logout"
+  }
+]
 
   return (
     <div className="h-14 bg-gray flex flex-row ">
@@ -17,10 +34,11 @@ const Navbar = () => {
         <img src={Person} className="h-10 my-auto cursor-pointer" onClick={() => setMenuVisibilty(!menuVisibility)}/>
         {menuVisibility && (
           <div className="absolute flex flex-col right-0 top-14 bg-gray w-40 text-off-white items-center text-center rounded-br-lg rounded-bl-lg">
-            <Link to="/user/profile" onClick={() => setMenuVisibilty(false)}>Profile</Link>
-            <Link to="/user/orders" onClick={() => setMenuVisibilty(false)}>Orders</Link>
-            <Link to="/user/settings" onClick={() => setMenuVisibilty(false)}>settings</Link>
-            <Link to="/user/logout" onClick={() => setMenuVisibilty(false)}>Logout</Link>
+            {
+              userOptions.map((option, index) => (
+                <Link to={option.link} className={`text-center w-full hover:bg-gray-light hover:text-black ${option.name === "Logout"? "mb-3": ""}`} onClick={() => setMenuVisibilty(!menuVisibility)} key={index}>{option.name}</Link>
+              ))
+            }
           </div>
         )}
         </div>
