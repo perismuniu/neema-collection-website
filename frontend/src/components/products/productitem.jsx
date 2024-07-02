@@ -1,4 +1,3 @@
-import React from 'react';
 
 const ProductItem = ({ image, name, price, buttonText }) => {
   return (
