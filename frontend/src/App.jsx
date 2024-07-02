@@ -16,9 +16,10 @@ import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
 import { useSelector } from "react-redux";
+import UserCart from "./components/userCart";
 
 function App() {
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.auth.user)
 
 
 function RequireAdmin ({ children }) {
@@ -68,9 +69,12 @@ function RequireAuth({ children }) {
           </Route>            
           <Route path="/" element={<Homepage />} />
           <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
-          <Route path="user/orderlist" element={<RequireAuth><OrderList /></RequireAuth>} />
+          <Route path="user/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
           <Route path="orders" element={<Orders />} />
           <Route path="user/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+          {/* <Route path="user/profile" element={<RequireAuth><Profile /></RequireAuth>} /> */}
+          <Route path="user/cart" element={<RequireAuth><UserCart/></RequireAuth>} />
+          {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

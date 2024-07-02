@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 const Settings = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
+  const user = useSelector(state => state.auth.user)
+  const {username, phone, email} = user
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -23,11 +26,11 @@ const Settings = () => {
         {isVisible && (
           <div className="ml-16 lg:ml-68 mt-2 text-sm ">
             <h2 className="font-bold mt-2">Names</h2> 
-            <p className="mt-2">Your names are <span className="font-bold">Peris Muniu</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
+            <p className="mt-2">Your names are <span className="font-bold">{username}</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
             <h2 className="font-bold mt-2">Phone Number</h2> 
-            <p className="mt-2">Your phone number is <span className="font-bold">0723167757</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
+            <p className="mt-2">Your phone number is <span className="font-bold">{phone}</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
             <h2 className="font-bold mt-2">Email address</h2>
-            <p className="mt-2">Your email address is <span className="font-bold">peris.muniu@gmail.com</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
+            <p className="mt-2">Your email address is <span className="font-bold">{email}</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
             <h2 className="font-bold mt-4">Password <a className="ml-4 text-blue-500" href="#">Hide</a></h2> 
             <div className="flex flex-row">
               <div className="mt-2">
@@ -65,7 +68,7 @@ const Settings = () => {
       {isPaymentVisible && (
         <div className="ml-64 mt-2 text-sm">
           <h2 className="font-bold mt-2">Mpesa Phone Number</h2> 
-          <p className="mt-2 mb-4">Your Mpesa phone number is <span className="font-bold">0723167757</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
+          <p className="mt-2 mb-4">Your Mpesa phone number is <span className="font-bold">{phone}</span> <a className="ml-4 text-blue-500 font-bold" href="#">change</a></p>
         </div>
       )}
       </div>

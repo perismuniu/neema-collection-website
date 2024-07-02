@@ -13,7 +13,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.loginLoading);
   const loginError = useSelector((state) => state.loginError);
-  const loggedInUser = useSelector((state) => state.user);
+  // const loggedInUser = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const showMessage = (event, ref, severity) => {
@@ -35,14 +35,22 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(login(loginData));
+    const user = await login(loginData, dispatch);
+    console.log(user)
+    if (user) {
+    if (user.isAdmin) {
+      navigate("/dashboard");
+    } else {
+      navigate("/");
+    }
+  }
   };
 
-  useEffect(() => {
-    loggedInUser && loggedInUser.isAdmin === true
-    ? navigate("/dashboard")
-    : navigate("/"); // If user is logged in, redirect to dashboard
-  }, [loggedInUser, navigate])
+  // useEffect(() => {
+  //   loggedInUser && loggedInUser.isAdmin === true
+  //   ? navigate("/dashboard")
+  //   : ""; // If user is logged in, redirect to dashboard
+  // }, [loggedInUser, navigate])
 
   return (
     <div className="bg-off-white bg-cover absolute inset-0 h-screen w-full text-lg">
