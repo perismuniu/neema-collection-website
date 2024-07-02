@@ -34,7 +34,6 @@ const Homepage = () => {
               image={pro.image}
               name={pro.title}
               price={pro.price}
-              buttonText="SHOP NOW"
             />
           ))}
         </div>

@@ -2,12 +2,36 @@ import mongoose, {Schema} from 'mongoose'
 
 // Product Interface
 export interface IProduct {
-    title: string;
-    description: string;
-    price: number;
-    image: string;
-    category: string;
-    stock: number;
+    "price" : number;
+    "_id" : mongoose.Schema.Types.ObjectId;
+  "title" : String;
+  "description" : String;
+  "image" : String;
+  "categories" : [String];
+  "colors" : [
+    {
+      "color" : String,
+      "stock" : [
+        {
+          "size" : String,
+          "quantity" : number
+        }
+      ]
+    }
+  ];
+  "category": string;
+  "discount" : number;
+  "rating" : number;
+  "reviews" : [
+    {
+      "rating" : number,
+      "review" : String,
+      "username" : String
+    }
+  ];
+  "stock" : number;
+  "createdAt" : Date;
+  "updatedAt" : Date
   }
 
   // product schema

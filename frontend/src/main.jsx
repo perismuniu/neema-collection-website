@@ -6,6 +6,8 @@ import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import 'primeicons/primeicons.css';
+        
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
