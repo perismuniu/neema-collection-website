@@ -10,11 +10,10 @@ import { Server } from "socket.io";
 import router from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import productRoute from "./routes/product.route";
-import { Product } from "./Models/product.model";
 import cartRoute from "./routes/cart.route";
 import walletRouter from "./routes/wallet.route";
 import { imageUpload, upload } from "./utils/imageUpload";
-import { isAdmin, isAuthenticated } from "./utils/auth.middleware";
+import { getInsights } from "./utils/insights";
 
 dotenv.config(); // Load environment variables from .env
 
@@ -77,18 +76,32 @@ app.post("/api/image/upload", upload.array("my_files"), imageUpload);
 
 io.on("connection", socket => {
   console.log(`connected: ${socket.id}`);
-  socket.on("get_all_products", async () => {
-    try {
-      const products = await Product.find({});
-      if (products.length === 0) {
-        socket.emit("get_all_products_response", { message: "No products found" });
-      } else {
-        socket.emit("get_all_products_response", products);
+  socket.on("get_insight_data", async () => {
+    const insightData = await getInsights()
+    const insights = [
+      {
+        name: "Orders",
+        value: insightData.currentMonthTotalOrders,
+        percentage: `${insightData.totalOrderPercentageChange > 0 ? "+" : ""}${insightData.totalOrderPercentageChange}%`,
+      },
+      {
+        name: "Sales",
+        value: insightData.currentMonthTotalSale,
+        percentage: `${insightData.totalSalePercentageChange > 0 ? "+" : ""}${insightData.totalSalePercentageChange}%`,
+      },
+      {
+        name: "Customers",
+        value: insightData.totalUserPercentageChange,
+        percentage: `${insightData.totalUserPercentageChange > 0 ? "+" : ""}${insightData.totalUserPercentageChange}%`,
+      },
+      {
+        name: "Products",
+        value: insightData.currentMonthTotalProducts,
+        percentage: `${insightData.totalProductPercentageChange > 0 ? "+" : ""}${insightData.totalProductPercentageChange}%`,
       }
-    } catch (error) {
-      console.log(error);
-      socket.emit("get_all_products_response", { message: "Error retrieving products" });
-    }
+    ]
+
+    socket.emit("insight_data", insights)
   });
 
   socket.on("disconnect", () => console.log("User disconnected", socket.id));

@@ -33,7 +33,6 @@ const OrderSchema: Schema = new Schema({
   } ,
   paymentMethod: { type: String, required: true, enum: ["payment on delivery", "wallet"], default: "wallet" },
   deliveryType: {type: String, enum: ["Shop pick-up", "Home delivery"], default: "Home delivery", require: true},
-  total: { type: Number, required: true },
 }, { timestamps: true });
 
 // total is the sum of all itemTotalPrices

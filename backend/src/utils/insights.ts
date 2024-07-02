@@ -47,4 +47,28 @@ export const getInsights = async () => {
     const currentMonthTotalProducts = _.size(currentMonthProducts)
     const lastMonthTotalProducts = _.size(lastMonthProducts)
     const currentMonthTotalSale = _.sumBy(currentMonthOrders, "total")
+    const lastMonthTotalSales = _.sumBy(lastMonthOrders, "total")
+
+    const totalOrderPercentageChange = ((currentMonthTotalOrders - lastMonthTotalOrders) / lastMonthTotalOrders) *100
+
+    const totalUserPercentageChange = ((currentMonthTotalUsers - lastMonthTotalUsers) / lastMonthTotalUsers) *100
+
+    const totalProductPercentageChange = ((currentMonthTotalProducts - lastMonthTotalProducts) / lastMonthTotalProducts) *100
+
+    const totalSalePercentageChange = ((currentMonthTotalSale - lastMonthTotalSales) / lastMonthTotalSales) *100
+
+    return {
+        currentMonthTotalOrders,
+        lastMonthTotalOrders,
+        currentMonthTotalUsers,
+        lastMonthTotalUsers,
+        currentMonthTotalProducts,
+        lastMonthTotalProducts,
+        currentMonthTotalSale,
+        lastMonthTotalSales,
+        totalOrderPercentageChange,
+        totalUserPercentageChange,
+        totalProductPercentageChange,
+        totalSalePercentageChange
+    }
 }
