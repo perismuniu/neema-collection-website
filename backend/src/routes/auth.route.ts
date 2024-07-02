@@ -8,12 +8,12 @@ router.post('/auth/login', login)
 router.get('/auth/logout', logout)
 router.get('/auth/profile', isAuthenticated ,dashboard)
 router.get("/auth", isAuthenticated, (req: any, res: Response) => {
-
+    const { wallet } = req.user
     if(req.user.isAdmin){
         return res.status(200).json({isAdmin: true, isAuthenticated: true})
     }
 
-    res.status(200).json({isAdmin: false, isAuthenticated: true})
+    res.status(200).json({isAdmin: false, isAuthenticated: true, wallet})
 })
 
 export default router

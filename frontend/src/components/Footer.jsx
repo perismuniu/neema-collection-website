@@ -1,6 +1,5 @@
-import React from 'react'
 import Mpesa from "../assets/mpesa-logo.png";
-import Stripe from "../assets/stripe.png";
+import Stripe from "../assets/stripe.png";        
 
 
 

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
 const Settings = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
@@ -13,7 +12,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="pt-10 bg-gray-light w-full min-h-screen absolute">
+    <div className="pt-10 bg-gray-light w-full min-h-screen absolute lg:px-52 md:px-40">
       <div className="flex flex-col">
         <h1 className="font-bold ml-4">Account Settings</h1>
         <button 

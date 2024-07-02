@@ -84,7 +84,7 @@ function RequireAuth({ children }) {
             element={
               <Navigate to="productslist" replace />
             }
-          />
+            />
               <Route path="productslist" element={<ProductList />} />
               <Route path="add" element={<AddProducts />} />
             </Route>
@@ -94,9 +94,9 @@ function RequireAuth({ children }) {
           </Route>            
           <Route path="/" element={<Homepage />} />
           <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
-          <Route path="orderlist" element={<OrderList/>} />
+          <Route path="user/orderlist" element={<RequireAuth><OrderList /></RequireAuth>} />
           <Route path="orders" element={<Orders />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="user/settings" element={<RequireAuth><Settings /></RequireAuth>} />
         </Routes>
       </BrowserRouter>
     </div>

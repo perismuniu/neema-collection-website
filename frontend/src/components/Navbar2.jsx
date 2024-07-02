@@ -17,10 +17,10 @@ const Navbar = () => {
         <img src={Person} className="h-10 my-auto cursor-pointer" onClick={() => setMenuVisibilty(!menuVisibility)}/>
         {menuVisibility && (
           <div className="absolute flex flex-col right-0 top-14 bg-gray w-40 text-off-white items-center text-center rounded-br-lg rounded-bl-lg">
-            <Link to="/user/profile">Profile</Link>
-            <Link to="/user/orders">Orders</Link>
-            <Link to="/user/settings">settings</Link>
-            <Link to="/user/logout">Logout</Link>
+            <Link to="/user/profile" onClick={() => setMenuVisibilty(false)}>Profile</Link>
+            <Link to="/user/orders" onClick={() => setMenuVisibilty(false)}>Orders</Link>
+            <Link to="/user/settings" onClick={() => setMenuVisibilty(false)}>settings</Link>
+            <Link to="/user/logout" onClick={() => setMenuVisibilty(false)}>Logout</Link>
           </div>
         )}
         </div>

@@ -2,13 +2,22 @@ import { Link, useNavigate } from "react-router-dom";
 import SignUp from "../assets/signup.png";
 import BusinessLogoBlack from "../assets/NeemaCollection-color_black.svg";
 import GoogleLogo from "../assets/google.png";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
+import { Toast } from 'primereact/toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const ErrorToast = useRef(null);
   const [loginData, setLoginData] = useState({email: "", password: ""}); // Initialize as empty object
   const [isLoading, setIsLoading] = useState(false); // Initialize as false
+
+
+  const showMessage = (event, ref, severity) => {
+    const {statusText, data} = event
+
+    ref.current.show({ severity: severity, summary: statusText, detail: data, life: 3000 });
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,13 +30,16 @@ const Login = () => {
       setIsLoading(false)
       res.data.isAdmin ? navigate("/dashboard") : navigate("/");
     } catch (error) {
-      alert("Error logging in. Please try again in a few minutes");
+      console.log(error)
+      showMessage(error.response, ErrorToast, 'error')
+      // alert("Error logging in. ");
       setIsLoading(false); // Reset isLoading state on error
     }
   };
 
   return (
     <div className="bg-off-white bg-cover absolute inset-0 h-screen w-full text-lg">
+      <Toast ref={ErrorToast} position="top-right" />
       <h1 className="font-Pacifico mt-10 text-center text-lg text-gray">
         neema collection
       </h1>

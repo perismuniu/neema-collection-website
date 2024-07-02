@@ -56,14 +56,14 @@ export const register = async (req: any, res: Response) => {
 export const login = (req: any, res: Response) => {
     passport.authenticate('local', (err: any, user: any, info: any) => {
         if (err) {
-            return res.send(err);
+            return res.status(500).json({message: "Error authenticating user!"});
         }
         if (!user) {
-            return res.status(401).send(info.message || 'Unauthorized');
+            return res.status(401).send(info.message || 'User not found');
         }
         req.logIn(user, (err: any) => {
             if (err) {
-                return res.send(err);
+                return res.status(500).json({message: err.message});
             }
 
             const token = jwt.sign({ sub: user._id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '1h' } as any);
