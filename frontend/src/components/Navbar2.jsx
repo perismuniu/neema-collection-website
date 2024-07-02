@@ -29,9 +29,11 @@ const Navbar = () => {
 ]
 const user = useSelector(state => state.auth.user)
 
+console.log(user)
+
 
 const handleCartView = () => {
-  
+navigate("/user/cart") 
 }
 
   return (

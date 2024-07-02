@@ -32,6 +32,7 @@ const Homepage = () => {
             <ProductItem
               key={index}
               image={pro.image}
+              id={pro._id}
               name={pro.title}
               price={pro.price}
             />

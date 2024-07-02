@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const ProductItem = () => {
+const ProductItem = ({ id }) => {
   const products = useSelector((state) => state.data.products);
   const navigate = useNavigate()
 
   return (
-    <div onClick={()=> navigate("/user/cart")} className="cursor-pointer">
+    <div onClick={()=> navigate(`/products/:${id}`)} className="cursor-pointer">
       {products &&
         products.map((pro, index) => (
           <div key={index}>
