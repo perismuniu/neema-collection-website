@@ -55,7 +55,7 @@ export const getUserCart = async (dispatch: any, token: any) => {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    });
+    })
     const data = res.data
     console.log(data)
     dispatch(setUserCart(data))

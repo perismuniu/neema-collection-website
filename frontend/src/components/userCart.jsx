@@ -1,8 +1,16 @@
-import {useSelector} from "react-redux"
+import { useEffect } from "react"
+import {useDispatch, useSelector} from "react-redux"
+import { getUserCart } from "../redux/userActionSlice"
 
 const UserCart = () => {
 
     const userCart = useSelector(state => state.data.userCart)
+    const dispatch = useDispatch()
+    const token = useSelector(state => state.auth.token)
+
+    useEffect(() => {
+        getUserCart(dispatch, token)
+    }, [token, dispatch])
 
     if (!userCart) {
         return <div>

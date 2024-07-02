@@ -5,9 +5,9 @@ import { addProduct, deleteProduct, getAllProducts, getProductById, updateProduc
 const productRoute = Router()
 
 productRoute.get('/products', getAllProducts);
-productRoute.get('/products/search', isAuthenticated, searchProduct);
+productRoute.get('/products/search', searchProduct);
 productRoute.post('/products', isAuthenticated,isAdmin, addProduct);
-productRoute.get('/products/:productId', isAuthenticated,getProductById);
+productRoute.get('/products/:productId', getProductById);
 productRoute.put('/products/:productId', isAuthenticated,isAdmin, updateProduct);
 productRoute.delete('/products/:productId', isAuthenticated,isAdmin, deleteProduct);
 

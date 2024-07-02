@@ -55,8 +55,8 @@ export const createOrder = async (req: any, res: Response) => {
 
     // check if user can buy the quantity of selected products
     for (const product of products) {
-      const productInStock = await Product.findById(product.product);
-      if (!productInStock || productInStock.stock < product.quantity) {
+      const productInStock = await Product.find(product.product);
+      if (!productInStock) {
         return res.status(404).json({ message: `Not enough stock for product ${product.product}` });
       }
     }

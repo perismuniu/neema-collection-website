@@ -1,5 +1,6 @@
 import { Cart } from "../Models/cart.model";
 import { Product } from "../Models/product.model";
+import { getCartProducts } from "../utils/getCartProducts";
 
 export const addToCart = async (req: any, res: any) => {
     const { productId, buyingQuantity } = req.body;
@@ -62,7 +63,8 @@ export const getCart = async (req: any, res: any) => {
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
-        return res.status(200).json(cart);
+        const products = await getCartProducts(cart._id);
+        return res.status(200).json({cart, cartProducts: products});
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });

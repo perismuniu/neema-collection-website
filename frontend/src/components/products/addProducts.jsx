@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const AddProducts = () => {
   const [files, setFiles] = useState([]);
@@ -7,7 +8,7 @@ const AddProducts = () => {
   const [res, setRes] = useState([]);
   const [data, setData] = useState({});
   const [activeInput, setActiveInput] = useState("title");
-  const token = localStorage.getItem("neematoken")
+  const token = useSelector(state => state.auth.token)
 
 
   const info = [
@@ -15,6 +16,8 @@ const AddProducts = () => {
     { name: "price", type: "number", min: 50 },
     { name: "stock", type: "number", min: 1, max: 100 },
     { name: "image", type: "file" },
+    { name: "color", type: "text" },
+    {name: "size", type: "text"},
     { name: "category", type: "text" },
   ];
 

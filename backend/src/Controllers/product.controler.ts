@@ -16,7 +16,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
 }
 
 export const addProduct = async (req: Request, res: Response) => {
-    const {title, description, price, category, stock, image} = req.body;
+    const {title, description, price, category, color ,stock, image, size} = req.body;
 
     if (!/^[a-zA-Z\s]*$/.test(title) || !/^[a-zA-Z\s]*$/.test(description) || !category || !/^\d/.test(price) || !/^\d/.test(stock) || !/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(image)) {
 
@@ -24,15 +24,19 @@ export const addProduct = async (req: Request, res: Response) => {
         else if(!/^[a-zA-Z\s]*$/.test(description)) console.log("Description is not valid")
         else if (!category) console.log("Category is not valid")
         else if (!/^\d/.test(price)) console.log("Price is not valid")
-        else if (!/^\d/.test(stock)) console.log("stock is not valid")
 
         return res.status(400).json({message: 'All fields are required'});
     }
 
     try {
-        const existingProduct = await Product.findOne({title});
+        const existingProduct = await Product.findOne({
+            $and: [
+                {title},
+                {"colors.color": color}
+            ]
+        });
         if (existingProduct) {
-            return res.json({message: `Product exist already and stock is ${existingProduct.stock}. Please update the existing product`});
+            return res.json({message: `Product exist already. Please update the existing product`});
         }
 
         const newProduct = new Product({
@@ -64,7 +68,7 @@ export const getProductById = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
     const {productId} = req.params;
-    const {title, description, price, category, stock} = req.body;
+    const {title, description, price, category, stock, color, size} = req.body;
 
     try {
         const product = await Product.findByIdAndUpdate(productId);
@@ -75,7 +79,9 @@ export const updateProduct = async (req: Request, res: Response) => {
             product.description = description;
             product.price = price;
             product.category = category;
-            product.stock = stock;
+            product.colors[0].stock.quantity = stock;
+            product.colors[0].stock.size = size;
+            product.colors.push(color)
             await product.save();
         }
     }catch (error) {
