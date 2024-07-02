@@ -14,6 +14,7 @@ export interface IOrder extends Document {
   status: string;
   paymentMethod: string;
   deliveryType: string;
+  total: number;
 }
 
 const OrderSchema: Schema = new Schema({
@@ -31,7 +32,13 @@ const OrderSchema: Schema = new Schema({
     default: 'pending'
   } ,
   paymentMethod: { type: String, required: true, enum: ["payment on delivery", "wallet"], default: "wallet" },
-  deliveryType: {type: String, enum: ["Shop pick-up", "Home delivery"], default: "Home delivery", require: true}
+  deliveryType: {type: String, enum: ["Shop pick-up", "Home delivery"], default: "Home delivery", require: true},
+  total: { type: Number, required: true },
 }, { timestamps: true });
+
+// total is the sum of all itemTotalPrices
+OrderSchema.virtual("total").get( function (this:any) {
+  return (this.items ?? []).reduce((total: any, item:any) => total + item.itemTotalPrice, 0);
+});
 
 export const order = mongoose.model<IOrder>("Order", OrderSchema);
