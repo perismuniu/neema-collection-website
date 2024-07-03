@@ -39,6 +39,7 @@ const Login = () => {
     console.log(user)
     if (user) {
     if (user.isAdmin) {
+      console.log(user.isAdmin)
       navigate("/dashboard");
     } else {
       navigate("/");

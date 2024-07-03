@@ -80,9 +80,9 @@ app.post("/api/image/upload", upload.array("my_files"), imageUpload);
 app.post('/api/getcartwithproducts', async (req, res) => {
   const cart = req.body;
 
-  // if (!cart) {
-  //   return res.status(400).json({ message: 'Cart not found' });
-  // }
+  if (!cart) {
+    return res.status(400).json({ message: 'Cart not found' });
+  }
 
   const productIds = cart.items.map((item: any) => item.productId);
   const products = await Product.find({ _id: { $in: productIds } });

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from "react-router-dom";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
 import Login from "./components/login";
@@ -17,47 +17,24 @@ import { useEffect, useState } from "react";
 import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
+import { useSelector } from "react-redux";
 
 function App() {
-  const [authInfo, setAuthInfo] = useState({})
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const loggedIn = async () => {
-      await axios.get("http://localhost:3001/api/auth", {
-        headers: `Authorization: Bearer ${localStorage.getItem("neematoken")}`
-      }).then((res) =>{
-        setAuthInfo(res.data)
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err)
-        // alert(err.message)
-        setLoading(false)
-      })
-    }
-    loggedIn()
-  }, [])
+  
+  const user = useSelector(state => state.auth.user)
 
 
 function RequireAdmin ({ children }) {
 
-  if(loading ) {
-    return <h1>Loading...</h1>
-  }
-  if (!authInfo.isAdmin ) {
+  if (!user.isAdmin ) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
 }
 
 function RequireAuth({ children }) {
-
-  if(loading ) {
-    return <h1>Loading...</h1>
-  }
   
-  if (!authInfo.isAuthenticated) {
+  if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
