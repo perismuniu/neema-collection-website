@@ -1,13 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "rootDir": ".",
-      "outDir": "./public",
-      "strict": true,
-      "moduleResolution": "node",
-      "esModuleInterop": true
-    },
-    "include": ["./src/**/*"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": ".",
+    "outDir": "./public",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "verbose": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
 }
