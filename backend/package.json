@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/server.ts",
-    "build": "tsc",
+    "build": "tsc && mv public/* .",
     "dev": "nodemon ./src/server.ts",
     "serve": "node dist/server.js"
   },
