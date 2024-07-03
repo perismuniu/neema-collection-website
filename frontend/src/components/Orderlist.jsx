@@ -1,7 +1,6 @@
 import { getAdapter } from "axios"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import WithAuth from "./utils/WithAuth"
 
 const OrderList = ({ OrderDate, OrderNumber, Price, image, Title, Status }) => {
 
@@ -35,4 +34,4 @@ const OrderList = ({ OrderDate, OrderNumber, Price, image, Title, Status }) => {
   )
 }
 
-export const NamedOrderList = WithAuth(OrderList)
+export default OrderList

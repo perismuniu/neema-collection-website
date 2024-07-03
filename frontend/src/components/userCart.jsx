@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import {useDispatch, useSelector} from "react-redux"
 import { getUserCart, removeFromCart } from "../redux/userActionSlice"
-import WithAuth from "./utils/WithAuth"
 
 const UserCart = () => {
 
@@ -35,9 +34,9 @@ const UserCart = () => {
               <li key={item._id} className="py-4 flex">
                 <div className="flex-1">
                   <h3 className="text-lg font-bold">{item.product?.title}</h3>
-                  <p className="text-gray-600">{item.product?.description}</p>
+                  <p className="text-gray-600">{item.product.description}</p>
                   <p className="text-gray-600">
-                    Quantity: {item.buyingQuantity} x ${item.product?.price}
+                    Quantity: {item.buyingQuantity} x ${item.product.price}
                   </p>
                 </div>
                 <div className="flex justify-end">
@@ -64,4 +63,4 @@ const UserCart = () => {
       );
 }
 
-export const NamedUserCart = WithAuth(UserCart)
+export default UserCart

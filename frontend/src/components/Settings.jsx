@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import WithAuth from './utils/WithAuth';
 const Settings = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
@@ -77,4 +76,4 @@ const Settings = () => {
   );
 };
 
-export const NamedSetting = WithAuth(Settings);
+export default Settings;

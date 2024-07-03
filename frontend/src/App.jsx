@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
-import ConnectedLogin from "./components/login";
+import Login from "./components/login";
 import Navbar from "./components/Navbar2";
 import Homepage from "./components/Homepage";
 import Overview from "./components/dashboard/overview";
@@ -11,21 +11,53 @@ import Notifications from "./components/dashboard/notifications";
 import Products from "./components/dashboard/products";
 import AddProducts from "./components/products/addProducts";
 import ProductList from "./components/products/productlist";
-import  { NamedCheckout } from "./components/Checkout";
+import Checkout from "./components/Checkout";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Orders from "./components/orders";
-import  { NamedOrderList } from "./components/Orderlist";
-import { NamedSetting } from "./components/Settings"
-import { useSelector } from "react-redux";
-import  { NamedUserCart } from "./components/userCart";
-import ProductsPage from "./components/productsPage";
+import OrderList from "./components/Orderlist";
+import Settings from "./components/Settings"
 
 function App() {
-  const user = useSelector(state => state.auth.user)
+  const [authInfo, setAuthInfo] = useState({})
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loggedIn = async () => {
+      await axios.get("http://localhost:3001/api/auth", {
+        headers: `Authorization: Bearer ${localStorage.getItem("neematoken")}`
+      }).then((res) =>{
+        setAuthInfo(res.data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        // alert(err.message)
+        setLoading(false)
+      })
+    }
+    loggedIn()
+  }, [])
 
 
 function RequireAdmin ({ children }) {
 
-  if (!user.isAdmin ) {
+  if(loading ) {
+    return <h1>Loading...</h1>
+  }
+  if (!authInfo.isAdmin ) {
+    return <Navigate to="/auth/login" replace />;
+  }
+  return children;
+}
+
+function RequireAuth({ children }) {
+
+  if(loading ) {
+    return <h1>Loading...</h1>
+  }
+  
+  if (!authInfo.isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
@@ -37,7 +69,7 @@ function RequireAdmin ({ children }) {
         <Navbar />
         <Routes>
           <Route path="/auth/signup" element={<Auth />} />
-          <Route path="/auth/login" element={<ConnectedLogin />} />
+          <Route path="/auth/login" element={<Login />} />
           <Route path="/dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} >
             <Route
               index
@@ -52,7 +84,7 @@ function RequireAdmin ({ children }) {
             element={
               <Navigate to="productslist" replace />
             }
-            />
+          />
               <Route path="productslist" element={<ProductList />} />
               <Route path="add" element={<AddProducts />} />
             </Route>
@@ -61,18 +93,20 @@ function RequireAdmin ({ children }) {
             <Route path="notifications" element={<Notifications />}/>
           </Route>            
           <Route path="/" element={<Homepage />} />
-          <Route path="checkout" element={ <NamedCheckout /> } />
-          <Route path="user/orders" element={<NamedOrderList />} />
+          <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
+          <Route path="orderlist" element={<OrderList/>} />
           <Route path="orders" element={<Orders />} />
-          <Route path="user/settings" element={<NamedSetting />} />
-          {/* <Route path="user/profile" element={<RequireAuth><Profile /></RequireAuth>} /> */}
-          <Route path="user/cart" element={<NamedUserCart/>} />
-          <Route path="/products/*" element={<ProductsPage />} />
+          <Route path="settings" element={<Settings />} />
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
 
+
+// Higher-order component to protect routes
+
+
+// Higher-order component to protect admin routes
 
 export default App;
