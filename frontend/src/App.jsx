@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
 import Login from "./components/login";
@@ -12,8 +12,6 @@ import Products from "./components/dashboard/products";
 import AddProducts from "./components/products/addProducts";
 import ProductList from "./components/products/productlist";
 import Checkout from "./components/Checkout";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
