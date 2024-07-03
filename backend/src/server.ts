@@ -32,7 +32,7 @@ const io = new Server(server, {
     origin: "https://neema-collection-website.vercel.app/",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],},
-} as any);
+} as any );
 
 app.use(express.json());
 app.use(cors({
