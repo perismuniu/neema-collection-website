@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 const ProductItem = ({ id, image, name, price, sizes, colors, reviews }) => {
   const navigate = useNavigate()
 
+  console.log(id)
   return (
     <div onClick={()=> navigate(`/products/:${id}`)} className="cursor-pointer">
   

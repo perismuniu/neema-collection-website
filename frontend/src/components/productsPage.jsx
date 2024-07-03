@@ -12,6 +12,8 @@ const ProductsPage = () => {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
 
+  console.log(id)
+
   useEffect(() => {
     getProductById(id).then((data) => setProduct(data));
   }, [id]);

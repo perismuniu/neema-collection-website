@@ -10,9 +10,13 @@ const Homepage = () => {
   const products = useSelector(state => state.data.products)
   const dispatch = useDispatch()
 
+  console.log(products)
+
+
   useEffect(() => {
     getProducts(dispatch)
-  }, [dispatch])
+    console.log(products)
+  },[dispatch])
   
   return (
     <div className="bg-off-white min-h-screen p-4 bg-cover">
@@ -28,13 +32,14 @@ const Homepage = () => {
         />
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5 ml-14">
-          {products && products.map((pro, index) => (
+          {products.map((pro, index) => (
             <ProductItem
               key={index}
               image={pro.image}
-              id={pro._id}
               name={pro.title}
+              id={pro._id}
               price={pro.price}
+              buttonText="SHOP NOW"
             />
           ))}
         </div>

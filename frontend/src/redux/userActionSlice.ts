@@ -50,7 +50,7 @@ export const {
 export const getProducts = async (dispatch: any) => {
   try {
     dispatch(setLoadingProductsData(true));
-    const res = await axios.get("http://localhost:3001/api/products");
+    const res = await axios.get(`http://localhost:3001/api/products`);
     const data = res.data;
     dispatch(setProducts(data));
     dispatch(setLoadingProductsData(false));
