@@ -78,11 +78,14 @@ export const login = (req: any, res: Response) => {
 };
 
 export const logout = (req: any, res: Response) => {
-    req.session = null;
-    req.logout(req.user);
-    res.json({ message: 'Logged out' });
-};
-
+    req.logout((err: Error) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error logging out' });
+      }
+      req.session = null;
+      res.json({ message: 'Logged out' });
+    });
+  };
 // Dashboard
 export const dashboard = (req: any, res: Response) => {
     if (!req.user) {

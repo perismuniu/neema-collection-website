@@ -11,12 +11,12 @@ import Notifications from "./components/dashboard/notifications";
 import Products from "./components/dashboard/products";
 import AddProducts from "./components/products/addProducts";
 import ProductList from "./components/products/productlist";
-import Checkout from "./components/Checkout";
+import  { NamedCheckout } from "./components/Checkout";
 import Orders from "./components/orders";
-import OrderList from "./components/Orderlist";
-import Settings from "./components/Settings"
+import  { NamedOrderList } from "./components/Orderlist";
+import { NamedSetting } from "./components/Settings"
 import { useSelector } from "react-redux";
-import UserCart from "./components/userCart";
+import  { NamedUserCart } from "./components/userCart";
 import ProductsPage from "./components/productsPage";
 
 function App() {
@@ -26,14 +26,6 @@ function App() {
 function RequireAdmin ({ children }) {
 
   if (!user.isAdmin ) {
-    return <Navigate to="/auth/login" replace />;
-  }
-  return children;
-}
-
-function RequireAuth({ children }) {
-  
-  if (!user) {
     return <Navigate to="/auth/login" replace />;
   }
   return children;
@@ -69,17 +61,18 @@ function RequireAuth({ children }) {
             <Route path="notifications" element={<Notifications />}/>
           </Route>            
           <Route path="/" element={<Homepage />} />
-          <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
-          <Route path="user/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
+          <Route path="checkout" element={ <NamedCheckout /> } />
+          <Route path="user/orders" element={<NamedOrderList />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="user/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+          <Route path="user/settings" element={<NamedSetting />} />
           {/* <Route path="user/profile" element={<RequireAuth><Profile /></RequireAuth>} /> */}
-          <Route path="user/cart" element={<RequireAuth><UserCart/></RequireAuth>} />
+          <Route path="user/cart" element={<NamedUserCart/>} />
           <Route path="/products/*" element={<ProductsPage />} />
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
+
 
 export default App;

@@ -14,6 +14,8 @@ const userSlice = createSlice({
       _id: null,
       wallet: null
     },
+   logout:
+      null,
     loginError: null,
     loginLoading: false,
     logoutError: null
@@ -33,11 +35,14 @@ const userSlice = createSlice({
     },
     setLogoutError: (state, action) => {
       state.logoutError = action.payload
+    },
+    setLogout: (state, action) => {
+      state.logout = action.payload
     }
   },
 });
 
-export const { setCredentials, setUser, setLoginError, setLoginLoading } = userSlice.actions;
+export const { setCredentials, setUser, setLoginError, setLoginLoading, setLogout } = userSlice.actions;
 
 export const login = async (loginData:any, dispatch:any) => {
 
@@ -58,16 +63,6 @@ export const login = async (loginData:any, dispatch:any) => {
   }
 }
 
-export const logout = async (token: any) => {
-  try {
-    const res = await axios.get("http://localhost:3001/api/auth/logout", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-  } catch (error) {
-    alert("Error Logging out!")
-  }
-}
+
 
 export default userSlice.reducer;

@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import {useDispatch, useSelector} from "react-redux"
 import { getUserCart, removeFromCart } from "../redux/userActionSlice"
+import WithAuth from "./utils/WithAuth"
 
 const UserCart = () => {
 
@@ -63,4 +64,4 @@ const UserCart = () => {
       );
 }
 
-export default UserCart
+export const NamedUserCart = WithAuth(UserCart)

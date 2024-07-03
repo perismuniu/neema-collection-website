@@ -3,11 +3,13 @@ import Logo from "../assets/NeemaCollection-Logo-color_white.svg";
 import Cart from "../assets/cart.svg";
 import Person from "../assets/person.svg"
 import {Link, useNavigate} from "react-router-dom"
-import { logout } from "../redux/userSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/userActionSlice";
+
 
 const Navbar = () => {
   const [menuVisibility, setMenuVisibilty] = useState(false)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const token = useSelector(state => state.token)
   const userOptions = [{
@@ -33,6 +35,31 @@ const userCart = useSelector(state => state.data.userCart)
 const handleCartView = () => {
 navigate("/user/cart") 
 }
+const handleLogout = () => {
+  logout(token, dispatch).then(() => {
+    dispatch({
+      type: 'auth',
+      payload: {
+        token: null,
+        user: {
+          isAdmin: false,
+          name: null,
+          email: null,
+          phone: null,
+          address: null,
+          _id: null,
+          wallet: null
+        },
+        logout: null,
+        loginError: null,
+        loginLoading: false,
+        logoutError: null
+      }
+    });
+  }).then(()=>{
+    navigate("/")
+  });
+}
 
 const totalQuantity = userCart.items?.reduce((acc, item) => acc + item.buyingQuantity, 0);
 
@@ -51,7 +78,7 @@ const totalQuantity = userCart.items?.reduce((acc, item) => acc + item.buyingQua
               userOptions.map((option, index) => (
                   <li to={option.action} className={`text-center w-full hover:bg-gray-light cursor-pointer hover:text-black ${option.name === "Logout"? "mb-3": ""}`} onClick={() => {
                     setMenuVisibilty(false)
-                    option.name === "Logout"? logout(token) : navigate(option.action)
+                    option.name === "Logout"? handleLogout() : navigate(option.action)
                   }} key={index}>{option.name}</li>
               ))
             }

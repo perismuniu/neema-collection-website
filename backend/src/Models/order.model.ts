@@ -21,7 +21,7 @@ const OrderSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   items: [
     {
-      product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+      productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
       quantity: { type: Number, required: true },
       itemTotalPrice: { type: Number, required: true },
     },
@@ -32,7 +32,7 @@ const OrderSchema: Schema = new Schema({
     default: 'pending'
   } ,
   paymentMethod: { type: String, required: true, enum: ["payment on delivery", "wallet"], default: "wallet" },
-  deliveryType: {type: String, enum: ["Shop pick-up", "Home delivery"], default: "Home delivery", require: true},
+  deliveryType: {type: String, enum: ["Shop pick-up", "Home delivery"], default: "Shop pick-up", require: true},
 }, { timestamps: true });
 
 // total is the sum of all itemTotalPrices

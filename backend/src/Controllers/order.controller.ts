@@ -99,7 +99,7 @@ const deductPaymentFromWallet = async (user: any, amount: number) => {
  */
 export const getOrders = async (req: any, res: Response) => {
   try {
-    const orders: IOrder[] = await Order.find({ user: req.user?._id });
+    const orders: IOrder[] = await Order.find({ user: req.user._id });
 
     orders.length === 0 ? res.status(404).json({ message: "You have no orders for now!" }) : res.status(200).json({ message: "Orders retrieved successfully", orders });
   } catch (error) {

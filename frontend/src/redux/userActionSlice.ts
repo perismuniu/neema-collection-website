@@ -5,53 +5,48 @@ const dataSlice = createSlice({
   name: "data",
   initialState: {
     products: [],
-    errorGettingProducts: null,
-    loadingProductsData: false,
-    loadingUserCart: false,
-    errorGettingUserOreders: null,
+    loading: false,
+    error: null,
     userCart: [],
+    orders: []
   },
   reducers: {
     setProducts: (state, action) => {
       state.products = action.payload;
     },
-    setErrorGettingProducts: (state, action) => {
-      state.errorGettingProducts = action.payload;
+    setOrders: (state, action) => {
+      state.orders = action.payload;
     },
-    setErrorGettingUserCart: (state, action) => {
-      state.errorGettingUserOreders = action.payload;
+    setError: (state, action) => {
+      state.error = action.payload;
     },
-    setLoadingProductsData: (state, action) => {
-      state.loadingProductsData = action.payload;
+    setLoading: (state, action) => {
+      state.loading = action.payload;
     },
     setUserCart: (state, action) => {
       state.userCart = action.payload;
-    },
-    setLoadingUserCart: (state, action) => {
-      state.loadingUserCart = action.payload;
     },
   },
 });
 
 export const {
   setProducts,
-  setErrorGettingProducts,
-  setLoadingProductsData,
   setUserCart,
-  setLoadingUserCart,
-  setErrorGettingUserCart,
+  setOrders,
+  setError,
+  setLoading
 } = dataSlice.actions;
 
 export const getProducts = async (dispatch: any) => {
   try {
-    dispatch(setLoadingProductsData(true));
+    dispatch(setLoading(true));
     const res = await axios.get(`http://localhost:3001/api/products`);
     const data = res.data;
     dispatch(setProducts(data));
-    dispatch(setLoadingProductsData(false));
+    dispatch(setLoading(false));
   } catch (error) {
-    dispatch(setErrorGettingProducts(error.response));
-    dispatch(setLoadingProductsData(false));
+    dispatch(error(error.response));
+    dispatch(setLoading(false));
   }
 };
 
@@ -69,7 +64,7 @@ export const getProductById = async (id: any) => {
 
 export const getUserCart = async (dispatch: any, token: any) => {
   try {
-    dispatch(setErrorGettingUserCart(true));
+    dispatch(setError(true));
     const res = await axios.get(`http://localhost:3001/api/getcart`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -82,12 +77,12 @@ export const getUserCart = async (dispatch: any, token: any) => {
     console.log(cartWithProducts.data)
 
     dispatch(setUserCart(cartWithProducts.data));
-    dispatch(setLoadingUserCart(false));
+    dispatch(setLoading(false));
   } catch (error) {
     alert(error.data)
 
-    dispatch(setErrorGettingUserCart(error.response));
-    dispatch(setErrorGettingUserCart(false));
+    dispatch(setError(error.response));
+    dispatch(setLoading(false));
   }
 };
 
@@ -132,5 +127,34 @@ export const removeFromCart = async (dispatch: any, token: any, productId: any) 
     console.log(error);
   }
 };
+
+export const getOrders = async (dispatch: any, token: any) => {
+  try {
+    const res = await axios.get(`http://localhost:3001/api/orders`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = res.data;
+    console.log(data)
+    dispatch(setOrders(data));
+  } catch (error) {
+    
+  }
+}
+
+
+export const logout = async (token: any, dispatch: any) => {
+  try {
+    await axios.get("http://localhost:3001/api/auth/logout", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }) 
+    dispatch(setUserCart({}))
+  } catch (error) {
+    alert("Error Logging out!")
+  }
+}
 
 export default dataSlice.reducer;

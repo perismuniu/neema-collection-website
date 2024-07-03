@@ -1,32 +1,34 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Orders = () => {
 
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
-    // const [error, setError] = useState(null)
+    const token = useSelector(state => state.data.token)
 
     useEffect(() => {
         const getOrders = async () => {
           setIsLoading(true);
-        //   axios.defaults.withCredentials = true; // Set withCredentials to true
-            const res = await axios.get('http://localhost:3001/api/orders', {
-              headers: `Bearer ${localStorage.getItem("neemaToken")}`
+            await axios.get('http://localhost:3001/api/orders', {
+              headers: `Bearer ${token}`
             })
              .then(res => {
                 setIsLoading(false);
-                return res.data;
+                setOrders(res.data);
               })
            .catch(err => {
               setIsLoading(false);
               alert(err.message);
               console.log(err);
             });
-          setOrders(res);
         };
         getOrders();
       }, []);
+
+      console.log(orders)
+
   return (
     <div>
       <h1>Orders</h1>
@@ -40,6 +42,7 @@ const Orders = () => {
               <th>Customer</th>
               <th>Total</th>
               <th>Status</th>
+              <th>Payment</th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +52,7 @@ const Orders = () => {
                 <td>{order.customer}</td>
                 <td>{order.total}</td>
                 <td>{order.status}</td>
+                <td>VIJJ</td>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,7 @@
 import Capture1 from "../assets/capture-1.png"
 import Capture2 from "../assets/capture-2.png"
 import Rating from "./Rating"
+import WithAuth from "./utils/WithAuth"
 
 const Checkout = () => {
    return (
@@ -39,4 +40,4 @@ const Checkout = () => {
   )
 }
 
-export default Checkout
+export const NamedCheckout = WithAuth(Checkout)
