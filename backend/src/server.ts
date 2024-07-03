@@ -33,7 +33,7 @@ const io = new Server(server, {
     secured: "true",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],},
-}as any);
+} as any);
 
 app.use(express.json());
 app.use(cors({
