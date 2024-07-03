@@ -28,9 +28,7 @@ const Navbar = () => {
   }
 ]
 const user = useSelector(state => state.auth.user)
-
-console.log(user)
-
+const userCart = useSelector(state => state.data.userCart)
 
 const handleCartView = () => {
 navigate("/user/cart") 
@@ -62,7 +60,7 @@ navigate("/user/cart")
         <h1 className="text-white hidden md:flex my-auto ml-5">Kshs. {user? user.wallet : 3000}</h1>
         <div className="relative items-center justify-center flex">
         <img src={Cart} className="h-7 md:h-10 my-auto ml-5 mr-5 cursor-pointer" onClick={()=> handleCartView()}/>
-        <div className={`absolute flex flex-col right-2 top-2 bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}>{user.wallet}</div>
+        <div className={`absolute flex flex-col right-2 top-2 bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}>{userCart.items ? userCart.items.length : 0}</div>
         </div>
       </div>
   

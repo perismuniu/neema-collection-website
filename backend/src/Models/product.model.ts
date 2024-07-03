@@ -84,8 +84,8 @@ export const ProductSchema = new Schema<IProduct>(
 );
 
 
+export const Product = mongoose.model<IProduct>("product", ProductSchema);
+
 ProductSchema.virtual("stock").get(function() {
   return this.colors.reduce((acc, color) => acc + color.stock.quantity, 0);
 });
-
-export const Product = mongoose.model<IProduct>("product", ProductSchema);

@@ -3,7 +3,8 @@ import { Product } from "../Models/product.model";
 import { getCartProducts } from "../utils/getCartProducts";
 
 export const addToCart = async (req: any, res: any) => {
-    const { productId, buyingQuantity } = req.body;
+    const { buyingQuantity } = req.body;
+    const productId = req.params.productId
 
     try {
         const item = await Product.findById(productId)

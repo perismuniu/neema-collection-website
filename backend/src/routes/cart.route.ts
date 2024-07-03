@@ -4,7 +4,7 @@ import { addToCart, getCart, removeFromCart } from "../Controllers/cart.controll
 
 const cartRoute = Router()
 
-cartRoute.post("/addtocart", isAuthenticated, addToCart )
+cartRoute.post("/addtocart/:productId", isAuthenticated, addToCart )
 cartRoute.get("/getcart", isAuthenticated, getCart)
 cartRoute.delete("/removefromcart", isAuthenticated, removeFromCart)
 
