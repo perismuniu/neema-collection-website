@@ -9,7 +9,8 @@ export interface ICart extends Document {
         buyingQuantity: number,
         buyingItemTotalPrice: number
     }],
-    buyingTotalPrice: number
+    buyingTotalPrice: number;
+    totalQuantity: number
 }
 
 export const cartSchema: Schema = new Schema({
@@ -24,5 +25,10 @@ export const cartSchema: Schema = new Schema({
     buyingTotalPrice: { type: Number, required: true },
   }, { timestamps: true }
 );
+
+cartSchema.virtual("totalQuantity").get(function() {
+  return (this.items as Array<{ productId: IProduct, buyingQuantity: number, buyingItemTotalPrice: number }> ?? []).reduce((acc: number, item: { productId: IProduct, buyingQuantity: number, buyingItemTotalPrice: number }) => acc + item.buyingQuantity, 0);
+});
+
 
 export const Cart = mongoose.model<ICart>("cart", cartSchema)

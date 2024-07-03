@@ -34,6 +34,8 @@ const handleCartView = () => {
 navigate("/user/cart") 
 }
 
+const totalQuantity = userCart.items?.reduce((acc, item) => acc + item.buyingQuantity, 0);
+
   return (
     <div className="h-14 bg-gray flex flex-row ">
       <Link to="/"><img src={Logo} className="h-14 w-52 relative" /></Link>
@@ -60,7 +62,7 @@ navigate("/user/cart")
         <h1 className="text-white hidden md:flex my-auto ml-5">Kshs. {user? user.wallet : 3000}</h1>
         <div className="relative items-center justify-center flex">
         <img src={Cart} className="h-7 md:h-10 my-auto ml-5 mr-5 cursor-pointer" onClick={()=> handleCartView()}/>
-        <div className={`absolute flex flex-col right-2 top-2 bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}>{userCart.items ? userCart.items.length : 0}</div>
+        <div className={`absolute flex flex-col right-2 top-2 bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}>{totalQuantity}</div>
         </div>
       </div>
   

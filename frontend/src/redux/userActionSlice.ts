@@ -9,7 +9,6 @@ const dataSlice = createSlice({
     loadingProductsData: false,
     loadingUserCart: false,
     errorGettingUserOreders: null,
-    userCartProducts: [],
     userCart: [],
   },
   reducers: {
@@ -31,9 +30,6 @@ const dataSlice = createSlice({
     setLoadingUserCart: (state, action) => {
       state.loadingUserCart = action.payload;
     },
-    setUserCartProducts: (state, action) => {
-      state.userCartProducts = action.payload;
-    }
   },
 });
 
@@ -44,7 +40,6 @@ export const {
   setUserCart,
   setLoadingUserCart,
   setErrorGettingUserCart,
-  setUserCartProducts
 } = dataSlice.actions;
 
 export const getProducts = async (dispatch: any) => {
@@ -71,6 +66,7 @@ export const getProductById = async (id: any) => {
     alert("error getting product");
   }
 };
+
 export const getUserCart = async (dispatch: any, token: any) => {
   try {
     dispatch(setErrorGettingUserCart(true));
@@ -80,11 +76,16 @@ export const getUserCart = async (dispatch: any, token: any) => {
       },
     });
     const data = res.data;
-    console.log(data);
-    dispatch(setUserCart(data.cart));
-    dispatch(setUserCartProducts(data.cartProducts))
+
+    // Use $lookup to fetch product details
+    const cartWithProducts = await axios.post(`http://localhost:3001/api/getcartwithproducts`, data.cart);
+    console.log(cartWithProducts.data)
+
+    dispatch(setUserCart(cartWithProducts.data));
     dispatch(setLoadingUserCart(false));
   } catch (error) {
+    alert(error.data)
+
     dispatch(setErrorGettingUserCart(error.response));
     dispatch(setErrorGettingUserCart(false));
   }
@@ -110,6 +111,22 @@ export const addToCart = async (
     );
     const data = res.data;
     console.log(data);
+    dispatch(setUserCart(data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const removeFromCart = async (dispatch: any, token: any, productId: any) => {
+  try {
+    const res = await axios.delete(`http://localhost:3001/api/removefromcart`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { productId },
+    });
+    const data = res.data;
+    console.log(data)
     dispatch(setUserCart(data));
   } catch (error) {
     console.log(error);

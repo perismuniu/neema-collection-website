@@ -45,7 +45,7 @@ export const addToCart = async (req: any, res: any) => {
 
             cart.items = cartItem
             await cart.save()
-            return res.status(200).json(cart)
+            return res.status(200).json(cart.toJSON({ virtuals: true }))
 
         } else {
             return res.status(404).json({ message: "Product not found" })
@@ -64,8 +64,8 @@ export const getCart = async (req: any, res: any) => {
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
-        const products = await getCartProducts(cart._id);
-        return res.status(200).json({cart, cartProducts: products});
+        // const products = await getCartProducts(cart._id);
+        return res.status(200).json({cart});
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -75,6 +75,7 @@ export const getCart = async (req: any, res: any) => {
 export const removeFromCart = async (req: any, res: any) => {
     const { productId } = req.body;
 
+
     try {
         const userId = req.user._id
         const cart = await Cart.findOne({ user: userId });
@@ -82,17 +83,19 @@ export const removeFromCart = async (req: any, res: any) => {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        const cartItem = cart.items
-        const itemIndex = cartItem.findIndex((item: any) => item.productId.toString() === productId.toString())
-        if (itemIndex > -1) {
-            const price = cartItem[itemIndex].buyingItemTotalPrice
-            cartItem.splice(itemIndex, 1)
-            cart.buyingTotalPrice -= price
-        }
+        const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
+  if (itemIndex === -1) {
+    throw new Error('Item not found in cart');
+  }
 
-        cart.items = cartItem
-        await cart.save()
-        return res.status(200).json(cart)
+  cart.items.splice(itemIndex, 1);
+
+  cart.totalQuantity = cart.items.reduce((acc, item) => acc + item.buyingQuantity, 0);
+
+  cart.buyingTotalPrice = cart.items.reduce((acc, item) => acc + (item.buyingQuantity * item.productId.price), 0);
+
+  await cart.save();
+ return res.status(201).json(cart);
 
     } catch (error) {
         console.log(error)

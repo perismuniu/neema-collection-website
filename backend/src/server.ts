@@ -14,6 +14,9 @@ import cartRoute from "./routes/cart.route";
 import walletRouter from "./routes/wallet.route";
 import { imageUpload, upload } from "./utils/imageUpload";
 import { getInsights } from "./utils/insights";
+import { isAuthenticated } from "./utils/auth.middleware";
+import { Cart } from "./Models/cart.model";
+import { Product } from "./Models/product.model";
 
 dotenv.config(); // Load environment variables from .env
 
@@ -73,6 +76,22 @@ app.use("/api", orderRouter);
 app.use("/api", cartRoute);
 app.use("/api", walletRouter);
 app.post("/api/image/upload", upload.array("my_files"), imageUpload);
+
+app.post('/api/getcartwithproducts', async (req, res) => {
+  const cart = req.body;
+
+  // if (!cart) {
+  //   return res.status(400).json({ message: 'Cart not found' });
+  // }
+
+  const productIds = cart.items.map((item: any) => item.productId);
+  const products = await Product.find({ _id: { $in: productIds } });
+  cart.items = cart.items.map((item: any) => {
+    const product = products.find(p => p._id.toString() === item.productId.toString());
+    return {...item, product };
+  });
+  res.json(cart);
+});
 
 io.on("connection", socket => {
   console.log(`connected: ${socket.id}`);

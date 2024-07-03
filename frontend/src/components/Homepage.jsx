@@ -10,12 +10,8 @@ const Homepage = () => {
   const products = useSelector(state => state.data.products)
   const dispatch = useDispatch()
 
-  console.log(products)
-
-
   useEffect(() => {
     getProducts(dispatch)
-    console.log(products)
   },[dispatch])
   
   return (
