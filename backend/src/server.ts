@@ -30,7 +30,6 @@ const db_connect = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PA
 const io = new Server(server, {
   cors: {
     origin: "https://neema-collection-website.vercel.app/",
-    secured: "true",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],},
 } as any);
@@ -38,7 +37,6 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cors({
   origin: "https://neema-collection-website.vercel.app/",
-  secured: "true",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
