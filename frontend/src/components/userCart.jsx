@@ -42,7 +42,7 @@ const ShoppingCart = () => {
               <div className="ml-4 flex-1">
                 <h2 className="text-xl font-semibold">{item.product.title}</h2>
                 <p className="text-gray-600">{item.product.category}</p>
-                <p className="text-green-500 font-bold">{`$${item.product.price}`}</p>
+                <p className="text-green-500 font-bold">{`KHs${item.product.price}`}</p>
                 <div className="flex items-center mt-2">
                   <button
                     className="text-gray-500"
