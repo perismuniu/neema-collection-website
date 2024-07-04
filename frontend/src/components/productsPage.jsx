@@ -16,7 +16,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white p-4">
+    <div className="flex flex-col md:flex-row bg-off-white p-4">
       <div className="md:w-1/2">
         <div className="relative">
           <img 
@@ -38,7 +38,7 @@ const ProductDetail = () => {
         </div>
       </div>
       <div className="md:w-1/2 p-4">
-        <h1 className="text-2xl font-bold">{product.title}</h1>
+        <h1 className="text-2xl font-bold text-gray">{product.title}</h1>
         <div className="flex items-center mt-2">
           <div className="text-yellow-400 flex">
             {[...Array(5)].map((_, i) => (
@@ -47,39 +47,39 @@ const ProductDetail = () => {
               </svg>
             ))}
           </div>
-          <span className="ml-2 text-gray-500">(150)</span>
+          <span className="ml-2 text-gray">(150)</span>
         </div>
         <p className="text-green-500 mt-2">Availability: In Stock</p>
-        <p className="mt-1"><span className="font-semibold">Meterial:</span> Lain</p>
-        <p className="mt-1"><span className="font-semibold">Category:</span> {product.category}</p>
+        <p className="mt-1 text-gray"><span className="font-semibold">Material:</span> Cotton </p>
+        <p className="mt-1 text-gray"><span className="font-semibold">Category:</span> {product.category}</p>
         {/* <p className="mt-1"><span className="font-semibold">SKU:</span> BE45VGTRK</p> */}
-        <p className="text-3xl font-bold text-purple-600 mt-4">KHs {product.price} <span className="text-gray-500 line-through">KHs {product.price + 48}</span></p>
-        <p className="text-gray-600 mt-4">{product.description}</p>
+        <p className="text-3xl font-bold text-light-pink mt-4">Kshs. {product.price} <span className="text-gray-500 line-through">Kshs. {product.price + 48}</span></p>
+        <p className="text-gray mt-4">{product.description}</p>
         <div className="mt-4">
-          <h2 className="font-semibold mb-2">Size</h2>
+          <h2 className="font-semibold mb-2 text-gray">Size</h2>
           <div className="flex space-x-2">
             {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
-              <button key={size} className="border rounded-lg px-4 py-2">{size}</button>
+              <button key={size} className="border border-gray rounded-lg px-4 py-2">{size}</button>
             ))}
           </div>
         </div>
         <div className="mt-4">
-          <h2 className="font-semibold mb-2">Color</h2>
+          <h2 className="font-semibold mb-2 text-gray">Color</h2>
           <div className="flex space-x-2">
             {['black', 'blue', 'red', 'gray'].map((color) => (
-              <button key={color} className={`w-6 h-6 rounded-full border border-gray-300 bg-${color}-500`}></button>
+              <button key={color} className={`w-6 h-6 rounded-full border border-gray bg-${color}-500`}></button>
             ))}
           </div>
         </div>
         <div className="mt-4 flex items-center">
-          <h2 className="font-semibold mr-2">Quantity</h2>
+          <h2 className="font-semibold mr-2 text-gray">Quantity</h2>
           <button className="border rounded-l-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity - 1)}>-</button>
           <span className="border-t border-b px-4 py-2">1</span>
           <button className="border rounded-r-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity + 1)}>+</button>
         </div>
         <div className="mt-4 flex space-x-2">
-          <button className="bg-purple-600 text-white px-6 py-2 rounded-lg">Add to cart</button>
-          <button className="border border-purple-600 text-purple-600 px-6 py-2 rounded-lg">Wishlist</button>
+          <button className="bg-light-pink text-white px-6 py-2 rounded-lg font-bold text-lg">Add to cart</button>
+          <button className="border border-light-pink gray px-6 py-2 rounded-lg text-light-pink font-bold text-lg">Wishlist</button>
         </div>
       </div>
     </div>
