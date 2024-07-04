@@ -73,7 +73,7 @@ function RequireAuth({ children }) {
           <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
           <Route path="orderlist" element={<OrderList/>} />
           <Route path="orders" element={<Orders />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="user/settings" element={<Settings />} />
           <Route path="user/cart" element={<ShoppingCart />} />
           <Route path="/products/*" element={<ProductDetail />} />
         </Routes>
