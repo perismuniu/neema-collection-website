@@ -5,14 +5,17 @@ const ProductDetail = () => {
 
   const products = useSelector(state => state.data.products)
   const location = useLocation().pathname
-  const proId = location.slice( )
+  const id = location.slice(location.lastIndexOf('/') + 2);
+  console.log(id)
+  console.log(products)
+  const product = products.find(pro => pro._id == id)
 
   return (
     <div className="flex flex-col md:flex-row bg-white p-4">
       <div className="md:w-1/2">
         <div className="relative">
           <img 
-            src={products}
+            src={product.image}
             alt="Big Italian Sofa" 
             className="w-full"
           />
@@ -24,14 +27,13 @@ const ProductDetail = () => {
           </button>
         </div>
         <div className="flex space-x-2 mt-2">
-          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
-          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
-          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
-          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+          {product.image.map(index => {
+            <img src={index} alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+          })}
         </div>
       </div>
       <div className="md:w-1/2 p-4">
-        <h1 className="text-2xl font-bold">BIG ITALIAN SOFA</h1>
+        <h1 className="text-2xl font-bold">{product.title}</h1>
         <div className="flex items-center mt-2">
           <div className="text-yellow-400 flex">
             {[...Array(5)].map((_, i) => (
@@ -43,11 +45,11 @@ const ProductDetail = () => {
           <span className="ml-2 text-gray-500">(150)</span>
         </div>
         <p className="text-green-500 mt-2">Availability: In Stock</p>
-        <p className="mt-1"><span className="font-semibold">Brand:</span> apex</p>
-        <p className="mt-1"><span className="font-semibold">Category:</span> Sofa</p>
-        <p className="mt-1"><span className="font-semibold">SKU:</span> BE45VGTRK</p>
-        <p className="text-3xl font-bold text-purple-600 mt-4">$450 <span className="text-gray-500 line-through">$999</span></p>
-        <p className="text-gray-600 mt-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem exercitationem voluptate sint eius ea assumenda provident eos repellendus qui neque!</p>
+        <p className="mt-1"><span className="font-semibold">Meterial:</span> Lain</p>
+        <p className="mt-1"><span className="font-semibold">Category:</span> {product.category}</p>
+        {/* <p className="mt-1"><span className="font-semibold">SKU:</span> BE45VGTRK</p> */}
+        <p className="text-3xl font-bold text-purple-600 mt-4">KHs {product.price} <span className="text-gray-500 line-through">KHs {product.price + 48}</span></p>
+        <p className="text-gray-600 mt-4">{product.description}</p>
         <div className="mt-4">
           <h2 className="font-semibold mb-2">Size</h2>
           <div className="flex space-x-2">
