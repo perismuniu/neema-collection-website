@@ -5,11 +5,13 @@ import { combineReducers } from 'redux';
 import authReducer from './userSlice';
 import dataReducer from "./userActionSlice";
 import cartSlice from "./cartSlice"
+import searchSlice from './searchSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   data: dataReducer,
-  cart: cartSlice
+  cart: cartSlice,
+  search: searchSlice
 });
 
 const persistConfig = {

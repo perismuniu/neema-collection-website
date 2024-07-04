@@ -24,7 +24,6 @@ const ShoppingCart = () => {
   };
 
   const handleQuantityChange = (productId, quantity) => {
-    console.log(productId, quantity)
     dispatch(updateQuantity({ productId, quantity }));
   };
 

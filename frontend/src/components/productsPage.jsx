@@ -1,18 +1,19 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { updateQuantity } from "../redux/userActionSlice";
 
 const ProductDetail = () => {
 
   const products = useSelector(state => state.data.products)
   const location = useLocation().pathname
   const id = location.slice(location.lastIndexOf('/') + 2);
+  const dispatch = useDispatch()
   
   const product = products.find(pro => pro._id == id)
 
-  useEffect(() => {
-    
-  },[])
+  const handleQuantityChange = (productId, quantity) => {
+    dispatch(updateQuantity({ productId, quantity }));
+  };
 
   return (
     <div className="flex flex-col md:flex-row bg-white p-4">
@@ -72,9 +73,9 @@ const ProductDetail = () => {
         </div>
         <div className="mt-4 flex items-center">
           <h2 className="font-semibold mr-2">Quantity</h2>
-          <button className="border rounded-l-lg px-4 py-2">-</button>
+          <button className="border rounded-l-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity - 1)}>-</button>
           <span className="border-t border-b px-4 py-2">1</span>
-          <button className="border rounded-r-lg px-4 py-2">+</button>
+          <button className="border rounded-r-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity + 1)}>+</button>
         </div>
         <div className="mt-4 flex space-x-2">
           <button className="bg-purple-600 text-white px-6 py-2 rounded-lg">Add to cart</button>
