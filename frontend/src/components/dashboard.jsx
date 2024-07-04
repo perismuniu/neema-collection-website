@@ -41,7 +41,7 @@ const Dashboard = () => {
                 <li
                   key={component}
                   className={`px-4 py-2 ${
-                    component === location ? "bg-[#FA61D0]" : ""
+                    component === location ? "bg-light-pink" : ""
                   } text-[#333]`}
                 >
                   <Link
@@ -54,7 +54,7 @@ const Dashboard = () => {
             </ul>
           </div>
           <div className="flex items-center justify-center mb-5">
-            <button className="bg-[#FA61D0] text-white py-3 px-6 rounded-2xl">
+            <button className="bg-light-pink text-white py-3 px-6 rounded-2xl">
               Logout
             </button>
           </div>

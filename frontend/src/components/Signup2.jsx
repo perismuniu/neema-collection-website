@@ -38,7 +38,7 @@ const Signup2 = ({ buttonText, signupData, setSignupData }) => {
           />
           <label
             htmlFor="password" // The label is used to label the form input
-            className="font-bold text-lg mt-3 text-left ml-24 text-gray"
+            className="font-bold text-lg mt-3 text-left ml-24 text-gray text-md"
           >
             Password
           </label>

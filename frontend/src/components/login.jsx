@@ -98,7 +98,7 @@ const Login = () => {
                   setLoginData({ ...loginData, email: e.target.value })
                 }
                 id="email"
-                className="bg-gray-light w-48 h-6 text-left ml-24 focus:outline-none"
+                className="bg-gray-light w-52 h-7 text-left ml-24 focus:outline-none text-base rounded"
               />
               <label
                 htmlFor="password"
@@ -113,11 +113,11 @@ const Login = () => {
                   setLoginData({ ...loginData, password: e.target.value })
                 }
                 id="password"
-                className="bg-gray-light w-48 h-6  text-left ml-24 focus:outline-none"
+                className="bg-gray-light w-52 h-6  text-left ml-24 focus:outline-none text-base rounded"
               />
               <button
                 type="submit"
-                className="bg-light-pink w-20 mt-3 h-8 mx-auto text-center text-white font-bold rounded-md text-lg py-1"
+                className="bg-light-pink w-24 mt-3 h-8 mx-auto text-center text-white font-bold rounded-md text-lg py-1"
               >
                 {isLoading ? "Logging in..." : "Welcome"}
               </button>
