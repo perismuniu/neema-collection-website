@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 const ProductItem = ({ id, image, name, price, sizes, colors, reviews }) => {
   const navigate = useNavigate()
 
-  console.log(id)
   return (
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md" >
           <img src={image} alt="Product" className="w-full h-[50%] mb-4 rounded-lg" />

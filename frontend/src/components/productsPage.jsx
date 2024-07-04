@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
@@ -6,9 +7,12 @@ const ProductDetail = () => {
   const products = useSelector(state => state.data.products)
   const location = useLocation().pathname
   const id = location.slice(location.lastIndexOf('/') + 2);
-  console.log(id)
-  console.log(products)
+  
   const product = products.find(pro => pro._id == id)
+
+  useEffect(() => {
+    
+  },[])
 
   return (
     <div className="flex flex-col md:flex-row bg-white p-4">

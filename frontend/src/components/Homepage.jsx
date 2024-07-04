@@ -17,7 +17,7 @@ const Homepage = () => {
   },[dispatch])
   
   return (
-    <div className="bg-off-white min-h-screen p-4 bg-cover">
+    <div className="bg-off-white min-h-screen  px-6 lg:px-48 bg-cover">
       <div className="container mx-auto">
         {products && products.length > 0 && (
           <ProductCard 

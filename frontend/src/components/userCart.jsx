@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, updateQuantity } from '../redux/userActionSlice';
+import { getUserCart, removeFromCart, updateQuantity } from '../redux/userActionSlice';
+import { useEffect } from 'react';
 
 const ShoppingCart = () => {
   const cartItems = useSelector((state) => state.data.userCart.items);
@@ -7,14 +8,23 @@ const ShoppingCart = () => {
   const shippingEstimate = 5.00;
   const taxEstimate = subtotal * 0.1;
   const orderTotal = subtotal + shippingEstimate + taxEstimate;
+  const token = useSelector(state => state.auth.token)
+  const userCart = useSelector(state => state.data.userCart)
+
+  console.log(userCart)
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    getUserCart(dispatch, token)
+  },[])
 
   const handleRemove = (productId) => {
     dispatch(removeFromCart(productId));
   };
 
   const handleQuantityChange = (productId, quantity) => {
+    console.log(productId, quantity)
     dispatch(updateQuantity({ productId, quantity }));
   };
 

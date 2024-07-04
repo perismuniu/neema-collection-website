@@ -7,7 +7,29 @@ const dataSlice = createSlice({
     products: [],
     loading: false,
     error: null,
-    userCart: {},
+    userCart: {
+      items: [{
+        productId: '',
+        buyingQuantity: 0,
+        buyingItemTotalPrice: 0,
+        product: {
+          category: '',
+          colors: [],
+          createdAt: '',
+          description: '',
+          image: [],
+          price: 0,
+          title: '',
+          updatedAt: '',
+          _id: '',
+        },
+        _id: '',
+      }],
+      totalQuantity: 0,
+      buyingTotalPrice: 0,
+      user: null
+
+    },
     orders: []
   },
   reducers: {
@@ -31,12 +53,17 @@ const dataSlice = createSlice({
     },
     updateQuantity: (state, action) => {
       const { productId, quantity } = action.payload;
-      const item = state.items.find((item) => item.productId === productId);
+      const item = state.userCart.items.find((item) => item.productId === productId);
       if (item) {
         item.buyingQuantity = quantity;
-        item.buyingItemTotalPrice = item.product.price * quantity;
+        // Assuming there's only one product per item, otherwise you need to handle this accordingly
+        console.log(item.product)
+        // const product = item.product.find((product) => product._id === productId);
+        // if (product) {
+          item.buyingItemTotalPrice = item.product.price * quantity; // update this line
+        // }
       }
-      state.userCart.buyingTotalPrice = state.userCart.items.reduce((total: any, item:any) => total + item.buyingItemTotalPrice, 0);
+      state.userCart.buyingTotalPrice = state.userCart.items.reduce((total, item) => total + item.buyingItemTotalPrice, 0);
     },
   },
 });
