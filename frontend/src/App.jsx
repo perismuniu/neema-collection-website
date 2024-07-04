@@ -18,6 +18,7 @@ import Settings from "./components/Settings"
 import { useSelector } from "react-redux";
 import ShoppingCart from "./components/userCart";
 import ProductDetail from "./components/productsPage";
+import Payment from "./components/payment";
 
 function App() {
   
@@ -70,7 +71,7 @@ function RequireAuth({ children }) {
             <Route path="notifications" element={<Notifications />}/>
           </Route>            
           <Route path="/" element={<Homepage />} />
-          <Route path="checkout" element={ <RequireAuth> <Checkout /></RequireAuth> } />
+          <Route path="cart/checkout" element={ <RequireAuth> <Payment /></RequireAuth> } />
           <Route path="orderlist" element={<OrderList/>} />
           <Route path="orders" element={<Orders />} />
           <Route path="user/settings" element={<Settings />} />

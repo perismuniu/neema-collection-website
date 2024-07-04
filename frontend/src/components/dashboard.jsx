@@ -1,41 +1,28 @@
 //dashboard.jsx
-import {  useEffect, useState } from "react";
+import {  useEffect } from "react";
+import { useDispatch } from "react-redux";
  import { Link, Outlet, useLocation } from "react-router-dom";
-import io from "socket.io-client";
+// import io from "socket.io-client";
+import { inSight } from "../redux/userActionSlice";
 
-const socket = io.connect("http://localhost:3001", {
-  logLevel: 'warn', // or 'error'
-});
 
 const Dashboard = () => {
-  const [error, setError] = useState("");
-  const token = localStorage.getItem("neematoken")
-
+  // const [error, setError] = useState("");
+  // const token = localStorage.getItem("neematoken")
+  const dispatch = useDispatch()
   const location = useLocation().pathname
 
-const [insights, setInsights] = useState([{}])
+
+
+
   // On page load, get list of products from the backend using WebSocket
   useEffect(() => {
-    const interval = setInterval(async () => {      
-      try {
-        socket.emit("get_insight_data");
-        socket.on("insight_data", (response) => {
-            setInsights(response);
-          })
-      } catch (error) {
-        setError(error.message);
-      }
-    }, 3000);
-  
-    return () => {
-      clearInterval(interval);
-      socket.off("get_all_products_response");
-    };
-  }, [token]);
+    inSight(dispatch)
+  }, []);
 
-  if(error) {
-    return <div>Error fetching! make sure you&apos;re logged in!</div>
-  }
+  // if(error) {
+  //   return <div>Error fetching! make sure you&apos;re logged in!</div>
+  // }
 
   const components = [
 
@@ -73,19 +60,7 @@ const [insights, setInsights] = useState([{}])
           </div>
         </aside>
         <main className="w-full h-[calc(100vh-72px)]">
-          <div className=" flex gap-4 mb-4">
-            {insights.map((insight, index) => (
-              <div
-                key={index}
-                className="flex-1 flex justify-between flex-col bg-white h-5vh rounded-2xl px-2 py-3"
-              >
-                <p>{insight.name}</p>
-                <p>{insight.value}</p>
-                <p>{insight.percentage}</p>
-              </div>
-            ))}
-          </div>
-          <div className="w-full border-x-4 border-y-4 rounded-2xl h-[calc(100%-120px)]">
+          <div className="w-full border-x-4 border-y-4 rounded-2xl h-full">
             <Outlet />
           </div>
         </main>

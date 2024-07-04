@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import * as io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3001");
 
 const dataSlice = createSlice({
   name: "data",
@@ -7,6 +10,7 @@ const dataSlice = createSlice({
     products: [],
     loading: false,
     error: null,
+    insights: [] ,
     userCart: {
       items: [{
         productId: '',
@@ -51,17 +55,17 @@ const dataSlice = createSlice({
     removeFromCart: (state, action) => {
       state.userCart.items = state.userCart.items.filter((item) => item.productId !== action.payload);
     },
+    setInsights: (state, action) => {
+      state.insights = action.payload;
+    },
     updateQuantity: (state, action) => {
       const { productId, quantity } = action.payload;
       const item = state.userCart.items.find((item) => item.productId === productId);
       if (item) {
-        item.buyingQuantity = quantity;
-        // Assuming there's only one product per item, otherwise you need to handle this accordingly
-        console.log(item.product)
-        // const product = item.product.find((product) => product._id === productId);
-        // if (product) {
-          item.buyingItemTotalPrice = item.product.price * quantity; // update this line
-        // }
+        const quant = quantity < 1 ? 1 : quantity
+        item.buyingQuantity = quant;
+
+          item.buyingItemTotalPrice = item.product.price * quant; // update this line
       }
       state.userCart.buyingTotalPrice = state.userCart.items.reduce((total, item) => total + item.buyingItemTotalPrice, 0);
     },
@@ -73,10 +77,29 @@ export const {
   setUserCart,
   updateQuantity,
   removeFromCart,
+  setInsights,
   setOrders,
   setError,
   setLoading
 } = dataSlice.actions;
+
+export const inSight = (dispatch:any)=> {
+  const interval = setInterval(async () => {      
+    try {
+      socket.emit("get_insight_data");
+      socket.on("insight_data", (response) => {
+          dispatch(setInsights(response));
+        })
+    } catch (error) {
+      setError(error.message);
+    }
+  }, 3000);
+
+  return () => {
+    clearInterval(interval);
+    socket.off("get_all_products_response");
+  };
+}
 
 export const getProducts = async (dispatch: any) => {
   try {

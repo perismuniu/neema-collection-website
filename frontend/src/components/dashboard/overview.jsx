@@ -1,10 +1,14 @@
 import { Chart } from 'primereact/chart';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Overview = () => {
 
   const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
+    const insights = useSelector(state => state.data.insights)
+
+    console.log(insights)
 
     useEffect(() => {
         const documentStyle = getComputedStyle(document.documentElement);
@@ -68,8 +72,19 @@ const Overview = () => {
     }, []);
 
   return <div className="">
+    <div className=" flex gap-4 mb-4">
+            {insights.map((insight, index) => (
+              <div
+                key={index}
+                className="flex-1 flex justify-between flex-col bg-white h-5vh rounded-2xl px-2 py-3"
+              >
+                <p>{insight.name}</p>
+                <p>{insight.value}</p>
+                <p>{insight.percentage}</p>
+              </div>
+            ))}
+          </div>
     <Chart type="bar" data={chartData} options={chartOptions} />
-
   </div>;
 };
 

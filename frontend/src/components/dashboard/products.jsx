@@ -17,7 +17,7 @@ const Products = () => {
   ];
 
   return (
-    <div>
+    <div className="h-full">
       <ul className="px-4 flex justify-between text-lg font-bold underline mb-1 mt-3 text-[#FA61D0]">
         {productActs.map((product) => (
           <Link

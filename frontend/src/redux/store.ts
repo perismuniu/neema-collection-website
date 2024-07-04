@@ -6,12 +6,14 @@ import authReducer from './userSlice';
 import dataReducer from "./userActionSlice";
 import cartSlice from "./cartSlice"
 import searchSlice from './searchSlice';
+import checkoutSlice from './checkoutSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   data: dataReducer,
   cart: cartSlice,
-  search: searchSlice
+  search: searchSlice,
+  checkout: checkoutSlice
 });
 
 const persistConfig = {

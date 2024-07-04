@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserCart, removeFromCart, updateQuantity } from '../redux/userActionSlice';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
   const cartItems = useSelector((state) => state.data.userCart.items);
@@ -10,6 +11,7 @@ const ShoppingCart = () => {
   const orderTotal = subtotal + shippingEstimate + taxEstimate;
   const token = useSelector(state => state.auth.token)
   const userCart = useSelector(state => state.data.userCart)
+  const navigate = useNavigate()
 
   console.log(userCart)
 
@@ -49,7 +51,7 @@ const ShoppingCart = () => {
                   >
                     -
                   </button>
-                  <span className="mx-2">{item.buyingQuantity}</span>
+                  <span className="mx-2" min={1}>{item.buyingQuantity}</span>
                   <button
                     className="text-gray-500"
                     onClick={() => handleQuantityChange(item.productId, item.buyingQuantity + 1)}
@@ -86,7 +88,7 @@ const ShoppingCart = () => {
               <span>Order total</span>
               <span>{`KHs ${orderTotal.toFixed(2)}`}</span>
             </div>
-            <button className="bg-black text-white w-full py-2 rounded-lg">
+            <button className="bg-black text-white w-full py-2 rounded-lg" onClick={() => navigate("/cart/checkout")}>
               Checkout
             </button>
           </div>
