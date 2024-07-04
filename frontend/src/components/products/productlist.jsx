@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProducts } from '../../redux/userActionSlice';
+import { deleteProduct, setProducts } from '../../redux/userActionSlice';
 
 function ProductList() {
   const products = useSelector(state => state.data.products)
@@ -8,6 +8,7 @@ function ProductList() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const dispatch = useDispatch()
+  const token = useSelector(state => state.auth.token)
 
   const handleEdit = (product) => {
     setIsEditing(true);
@@ -19,9 +20,10 @@ function ProductList() {
     setIsEditing(false);
   };
 
-  const handleRemove = (code) => {
+  const handleRemove = (id) => {
     // Remove product from the array
-    dispatch(setProducts(products.filter((product) => product.code !== code)))
+    dispatch(setProducts(products.filter((product) => product._id !== id)))
+    deleteProduct(dispatch, token, id)
   };
 
   return (
@@ -59,7 +61,7 @@ function ProductList() {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleRemove(product.code)}
+                  onClick={() => handleRemove(product._id)}
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
                 >
                   Remove

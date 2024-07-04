@@ -99,7 +99,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
         if (!product) {
             res.json({message: 'Product not found'});
         } else {
-            res.json({message: 'Product deleted successfully'});
+            res.json({product});
         }
         
     } catch (error) {

@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 const ProductForm = ({ addProduct }) => {
   const [product, setProduct] = useState({
     image: '',

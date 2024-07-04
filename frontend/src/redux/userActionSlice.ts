@@ -126,6 +126,17 @@ export const getProductById = async (id: any) => {
   }
 };
 
+export const deleteProduct = async (dispatch:any, id:any, token:any) => {
+
+  try {
+    const res = await axios.delete(`http://localhost:3001/products/:${id}`)
+    const data = res.data
+    dispatch(setProducts(data))
+  } catch (error) {
+    dispatch(setError(error.data))
+  }
+}
+
 export const getUserCart = async (dispatch: any, token: any) => {
   try {
     dispatch(setError(true));

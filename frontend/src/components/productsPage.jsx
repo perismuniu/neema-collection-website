@@ -1,19 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { updateQuantity } from "../redux/userActionSlice";
+import { addToCart } from "../redux/userActionSlice";
+import { useState } from "react";
 
 const ProductDetail = () => {
 
   const products = useSelector(state => state.data.products)
+  const [buyingQuantity, setByingQuantity] =useState(1)
   const location = useLocation().pathname
   const id = location.slice(location.lastIndexOf('/') + 2);
   const dispatch = useDispatch()
+  const token = useSelector(state => state.auth.token)
   
   const product = products.find(pro => pro._id == id)
 
-  const handleQuantityChange = (productId, quantity) => {
-    dispatch(updateQuantity({ productId, quantity }));
-  };
+  const handleAddToCart = () => {
+    addToCart(dispatch, token, product._id, buyingQuantity )
+  }
 
   return (
     <div className="flex flex-col md:flex-row bg-white p-4">
@@ -73,12 +76,12 @@ const ProductDetail = () => {
         </div>
         <div className="mt-4 flex items-center">
           <h2 className="font-semibold mr-2">Quantity</h2>
-          <button className="border rounded-l-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity - 1)}>-</button>
-          <span className="border-t border-b px-4 py-2">1</span>
-          <button className="border rounded-r-lg px-4 py-2" onClick={() => handleQuantityChange(product.productId, product.buyingQuantity + 1)}>+</button>
+          <button className="border rounded-l-lg px-4 py-2" onClick={() => setByingQuantity(buyingQuantity - 1)}>-</button>
+          <span className="border-t border-b px-4 py-2">{buyingQuantity < 1 ? setByingQuantity(1) : buyingQuantity}</span>
+          <button className="border rounded-r-lg px-4 py-2" onClick={() => setByingQuantity(buyingQuantity + 1)}>+</button>
         </div>
         <div className="mt-4 flex space-x-2">
-          <button className="bg-purple-600 text-white px-6 py-2 rounded-lg">Add to cart</button>
+          <button className="bg-purple-600 text-white px-6 py-2 rounded-lg" onClick={() => handleAddToCart()}>Add to cart</button>
           <button className="border border-purple-600 text-purple-600 px-6 py-2 rounded-lg">Wishlist</button>
         </div>
       </div>

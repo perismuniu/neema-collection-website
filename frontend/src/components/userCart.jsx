@@ -28,6 +28,7 @@ const ShoppingCart = () => {
   const handleQuantityChange = (productId, quantity) => {
     dispatch(updateQuantity({ productId, quantity }));
   };
+  console.log(cartItems)
 
   return (
     <div className="container mx-auto p-4">
