@@ -34,7 +34,7 @@ const Signup2 = ({ buttonText, signupData, setSignupData }) => {
             id="email"
             onChange={(e) => setSignupData({...signupData, email: e.target.value})} // This function is called whenever the user types in the form input
             type="email"
-            className="bg-gray-light w-48 h-6 text-left ml-24 focus:outline-none"
+            className="bg-gray-light w-52 text-left ml-24 focus:outline-none text-base rounded"
           />
           <label
             htmlFor="password" // The label is used to label the form input
@@ -46,7 +46,7 @@ const Signup2 = ({ buttonText, signupData, setSignupData }) => {
             name="password" // The name and id attributes are used to reference the form input in the onChange function
             id="password"
             onChange={(e) => setSignupData({...signupData, password: e.target.value})} // This function is called whenever the user types in the form input
-            className="bg-gray-light w-48 h-6  text-left ml-24 focus:outline-none"
+            className="bg-gray-light w-52 h-6  text-left ml-24 focus:outline-none text-base rounded"
             type="password"
           />
           <button

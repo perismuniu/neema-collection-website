@@ -98,7 +98,7 @@ const Login = () => {
                   setLoginData({ ...loginData, email: e.target.value })
                 }
                 id="email"
-                className="bg-gray-light w-52 h-7 text-left ml-24 focus:outline-none text-base rounded"
+                className="bg-gray-light w-52 text-left ml-24 focus:outline-none text-base rounded"
               />
               <label
                 htmlFor="password"
