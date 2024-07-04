@@ -16,6 +16,8 @@ import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
 import { useSelector } from "react-redux";
+import ShoppingCart from "./components/userCart";
+import ProductDetail from "./components/productsPage";
 
 function App() {
   
@@ -72,6 +74,8 @@ function RequireAuth({ children }) {
           <Route path="orderlist" element={<OrderList/>} />
           <Route path="orders" element={<Orders />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="user/cart" element={<ShoppingCart />} />
+          <Route path="/products/*" element={<ProductDetail />} />
         </Routes>
       </BrowserRouter>
     </div>

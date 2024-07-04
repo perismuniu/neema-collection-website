@@ -9,7 +9,9 @@ import { getProducts } from "../redux/userActionSlice";
 const Homepage = () => {
   const products = useSelector(state => state.data.products)
   const dispatch = useDispatch()
+  const usercart = useSelector(state => state.data.usercart)
 
+  console.log(usercart)
   useEffect(() => {
     getProducts(dispatch)
   },[dispatch])
@@ -27,9 +29,10 @@ const Homepage = () => {
 
         />
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5 ml-14">
-          {products.map((pro, index) => (
-            <ProductItem
+
+<div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4 bg-pink-50">
+      {products.map((pro, index) => (
+        <ProductItem
               key={index}
               image={pro.image}
               name={pro.title}
@@ -37,8 +40,8 @@ const Homepage = () => {
               price={pro.price}
               buttonText="SHOP NOW"
             />
-          ))}
-        </div>
+      ))}
+    </div>
       </div>
       <Footer />
     </div>

@@ -1,66 +1,90 @@
-import { useEffect } from "react"
-import {useDispatch, useSelector} from "react-redux"
-import { getUserCart, removeFromCart } from "../redux/userActionSlice"
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromCart, updateQuantity } from '../redux/userActionSlice';
 
-const UserCart = () => {
+const ShoppingCart = () => {
+  const cartItems = useSelector((state) => state.data.userCart.items);
+  const subtotal = useSelector((state) => state.data.userCart.buyingTotalPrice);
+  const shippingEstimate = 5.00;
+  const taxEstimate = subtotal * 0.1;
+  const orderTotal = subtotal + shippingEstimate + taxEstimate;
 
-    const userCart = useSelector(state => state.data.userCart)
-    const dispatch = useDispatch()
-    const token = useSelector(state => state.auth.token)
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        getUserCart(dispatch, token)
-    }, [token, dispatch])
+  const handleRemove = (productId) => {
+    dispatch(removeFromCart(productId));
+  };
 
-    if (!userCart) {
-        return <div>
-            <h1>No Items in Cart</h1>
-        </div>        
-    }
-    const handleProceedToCheckout = () => {
+  const handleQuantityChange = (productId, quantity) => {
+    dispatch(updateQuantity({ productId, quantity }));
+  };
 
-    }
-    const handleRemoveItem = (id) => {
-        removeFromCart(dispatch, token, id)
-    }
-
-    console.log(userCart)
-
-    return (
-        <div className="max-w-md mx-auto p-4 pt-6 md:p-6 lg:p-12">
-          <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-          <ul className="divide-y divide-gray-200">
-            {userCart.items.map((item) => (
-              <li key={item._id} className="py-4 flex">
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold">{item.product?.title}</h3>
-                  <p className="text-gray-600">{item.product.description}</p>
-                  <p className="text-gray-600">
-                    Quantity: {item.buyingQuantity} x ${item.product.price}
-                  </p>
-                </div>
-                <div className="flex justify-end">
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">Shopping Cart</h1>
+      <nav className="text-gray-500 mb-4">
+        Homepage / Clothing Categories / <span className="font-semibold text-gray-800">Shopping Cart</span>
+      </nav>
+      <div className="flex flex-col md:flex-row justify-between">
+        <div className="flex-1">
+          {cartItems.map((item) => (
+            <div key={item.productId} className="flex items-center border-b py-4">
+              <img src={item.product.image[0]} alt={item.product.title} className="w-24 h-24" />
+              <div className="ml-4 flex-1">
+                <h2 className="text-xl font-semibold">{item.product.title}</h2>
+                <p className="text-gray-600">{item.product.category}</p>
+                <p className="text-green-500 font-bold">{`$${item.product.price}`}</p>
+                <div className="flex items-center mt-2">
                   <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => handleRemoveItem(item._id)}
+                    className="text-gray-500"
+                    onClick={() => handleQuantityChange(item.productId, item.buyingQuantity - 1)}
                   >
-                    Remove
+                    -
+                  </button>
+                  <span className="mx-2">{item.buyingQuantity}</span>
+                  <button
+                    className="text-gray-500"
+                    onClick={() => handleQuantityChange(item.productId, item.buyingQuantity + 1)}
+                  >
+                    +
                   </button>
                 </div>
-              </li>
-            ))}
-          </ul>
-          <div className="flex justify-between mt-4">
-            <p className="text-lg font-bold">Total: ${userCart.buyingTotalPrice}</p>
-            <button
-              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleProceedToCheckout}
-            >
-              Proceed to Checkout
+              </div>
+              <button
+                className="text-blue-500 ml-4"
+                onClick={() => handleRemove(item.productId)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="w-full md:w-1/3 md:ml-4 mt-4 md:mt-0">
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <div className="flex justify-between mb-2">
+              <span>Subtotal</span>
+              <span>{`KHs ${subtotal.toFixed(2)}`}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>Shipping estimate</span>
+              <span>{`KHs ${shippingEstimate.toFixed(2)}`}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>Tax estimate</span>
+              <span>{`KHs ${taxEstimate.toFixed(2)}`}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg mb-4">
+              <span>Order total</span>
+              <span>{`KHs ${orderTotal.toFixed(2)}`}</span>
+            </div>
+            <button className="bg-black text-white w-full py-2 rounded-lg">
+              Checkout
             </button>
           </div>
         </div>
-      );
-}
+      </div>
+    </div>
+  );
+};
 
-export default UserCart
+export default ShoppingCart;

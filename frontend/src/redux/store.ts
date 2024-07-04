@@ -3,11 +3,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import authReducer from './userSlice';
-import dataReducer from "./userActionSlice"
+import dataReducer from "./userActionSlice";
+import cartSlice from "./cartSlice"
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  data: dataReducer
+  data: dataReducer,
+  cart: cartSlice
 });
 
 const persistConfig = {

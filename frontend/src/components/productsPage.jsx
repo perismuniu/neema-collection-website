@@ -1,60 +1,82 @@
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { addToCart, getProductById } from "../redux/userActionSlice";
-import { useDispatch, useSelector } from "react-redux";
 
-const ProductsPage = () => {
-  const [product, setProduct] = useState({});
-  const location = useLocation().pathname;
-  const [buyingQuantity, setBuyingQuantity] = useState(0)
-  const id = location.split(":")[1];
-  const [color, setColor] = useState("blue");
-  const dispatch = useDispatch()
-  const token = useSelector(state => state.auth.token)
+const ProductDetail = () => {
 
-  console.log(id)
-
-  useEffect(() => {
-    getProductById(id).then((data) => setProduct(data));
-  }, [id]);
-
-  const handleAddToCart = async () => {
-    addToCart(dispatch, token, id, buyingQuantity)
-  }
-  if(buyingQuantity < 0) setBuyingQuantity(0)
+  const products = useSelector(state => state.data.products)
+  const location = useLocation().pathname
+  const proId = location.slice( )
 
   return (
-    <div className="flex items-center flex-col lg:flex-row justify-center lg:px-10">
-      <div className="w-[60%] ">
-        <img src={product.image} />
+    <div className="flex flex-col md:flex-row bg-white p-4">
+      <div className="md:w-1/2">
+        <div className="relative">
+          <img 
+            src={products}
+            alt="Big Italian Sofa" 
+            className="w-full"
+          />
+          <button className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+            &lt;
+          </button>
+          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+            &gt;
+          </button>
+        </div>
+        <div className="flex space-x-2 mt-2">
+          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+          <img src="https://res.cloudinary.com/dhoopmcrq/image/upload/v1719953314/nerc07yzj9g5hwgvotvf.png" alt="Thumbnail" className="w-16 h-16 border border-gray-300" />
+        </div>
       </div>
-      <div className="flex-[30%]">
-        <h1 className="font-semibold text-2xl">{product.title}</h1>
-        <div className="flex mb-2">
-          <p className="text-green-600 px-2 py-1 border-green-600 border-2 rounded-md text-center">
-            KHs {product.price}
-          </p>
-          <p>{product.rating}</p>
+      <div className="md:w-1/2 p-4">
+        <h1 className="text-2xl font-bold">BIG ITALIAN SOFA</h1>
+        <div className="flex items-center mt-2">
+          <div className="text-yellow-400 flex">
+            {[...Array(5)].map((_, i) => (
+              <svg key={i} className="w-4 h-4 fill-current">
+                <use href="#star" />
+              </svg>
+            ))}
+          </div>
+          <span className="ml-2 text-gray-500">(150)</span>
         </div>
-        <p>Color: {color}</p>
-        <div className="flex gap-x-1">
-          {product.colors?.map((color, index) => (
-            <p key={index} onClick={() => setColor(color.color)}>
-              {color.color}
-            </p>
-          ))}
+        <p className="text-green-500 mt-2">Availability: In Stock</p>
+        <p className="mt-1"><span className="font-semibold">Brand:</span> apex</p>
+        <p className="mt-1"><span className="font-semibold">Category:</span> Sofa</p>
+        <p className="mt-1"><span className="font-semibold">SKU:</span> BE45VGTRK</p>
+        <p className="text-3xl font-bold text-purple-600 mt-4">$450 <span className="text-gray-500 line-through">$999</span></p>
+        <p className="text-gray-600 mt-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem exercitationem voluptate sint eius ea assumenda provident eos repellendus qui neque!</p>
+        <div className="mt-4">
+          <h2 className="font-semibold mb-2">Size</h2>
+          <div className="flex space-x-2">
+            {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
+              <button key={size} className="border rounded-lg px-4 py-2">{size}</button>
+            ))}
+          </div>
         </div>
-        <p>{product.category}</p>
-        <p>{product.size}</p>
-        <div className="flex gap-x-3">
-            <div className="items-center rounded-3xl flex flex-col text-black font-Outfit font-semibold justify-center bg-gray bg-opacity-20 text-center px-8 py-2">
-                <div className="bg-opacity-20 px-2 flex justify-between"><span className="bg-opacity-20 cursor-pointer mr-8" onClick={() => setBuyingQuantity(buyingQuantity - 1)}>-</span> {buyingQuantity} <span className="bg-opacity-20 ml-8 cursor-pointer" onClick={() => setBuyingQuantity(buyingQuantity + 1)}>+</span></div>
-            </div>
-            <button className="bg-gray text-white font-semibold text-center px-16 py-2 font-Outfit rounded-3xl text-2xl"  onClick={() => handleAddToCart()}>Add to cart</button >
+        <div className="mt-4">
+          <h2 className="font-semibold mb-2">Color</h2>
+          <div className="flex space-x-2">
+            {['black', 'blue', 'red', 'gray'].map((color) => (
+              <button key={color} className={`w-6 h-6 rounded-full border border-gray-300 bg-${color}-500`}></button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-4 flex items-center">
+          <h2 className="font-semibold mr-2">Quantity</h2>
+          <button className="border rounded-l-lg px-4 py-2">-</button>
+          <span className="border-t border-b px-4 py-2">1</span>
+          <button className="border rounded-r-lg px-4 py-2">+</button>
+        </div>
+        <div className="mt-4 flex space-x-2">
+          <button className="bg-purple-600 text-white px-6 py-2 rounded-lg">Add to cart</button>
+          <button className="border border-purple-600 text-purple-600 px-6 py-2 rounded-lg">Wishlist</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductsPage;
+export default ProductDetail;

@@ -7,7 +7,7 @@ const dataSlice = createSlice({
     products: [],
     loading: false,
     error: null,
-    userCart: [],
+    userCart: {},
     orders: []
   },
   reducers: {
@@ -26,12 +26,26 @@ const dataSlice = createSlice({
     setUserCart: (state, action) => {
       state.userCart = action.payload;
     },
+    removeFromCart: (state, action) => {
+      state.userCart.items = state.userCart.items.filter((item) => item.productId !== action.payload);
+    },
+    updateQuantity: (state, action) => {
+      const { productId, quantity } = action.payload;
+      const item = state.items.find((item) => item.productId === productId);
+      if (item) {
+        item.buyingQuantity = quantity;
+        item.buyingItemTotalPrice = item.product.price * quantity;
+      }
+      state.userCart.buyingTotalPrice = state.userCart.items.reduce((total: any, item:any) => total + item.buyingItemTotalPrice, 0);
+    },
   },
 });
 
 export const {
   setProducts,
   setUserCart,
+  updateQuantity,
+  removeFromCart,
   setOrders,
   setError,
   setLoading
@@ -112,21 +126,21 @@ export const addToCart = async (
   }
 };
 
-export const removeFromCart = async (dispatch: any, token: any, productId: any) => {
-  try {
-    const res = await axios.delete(`http://localhost:3001/api/removefromcart`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      data: { productId },
-    });
-    const data = res.data;
-    console.log(data)
-    dispatch(setUserCart(data));
-  } catch (error) {
-    console.log(error);
-  }
-};
+// export const removeFromCart = async (dispatch: any, token: any, productId: any) => {
+//   try {
+//     const res = await axios.delete(`http://localhost:3001/api/removefromcart`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//       data: { productId },
+//     });
+//     const data = res.data;
+//     console.log(data)
+//     dispatch(setUserCart(data));
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const getOrders = async (dispatch: any, token: any) => {
   try {

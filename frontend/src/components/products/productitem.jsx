@@ -5,34 +5,13 @@ const ProductItem = ({ id, image, name, price, sizes, colors, reviews }) => {
 
   console.log(id)
   return (
-    <div onClick={()=> navigate(`/products/:${id}`)} className="cursor-pointer">
-  
-            <div className="relative">
-              <img src={image} alt="product" />
-              <i
-                className="pi pi-heart absolute top-2 right-2 bg-blue-700 p-2 rounded-full"
-                style={{ fontSize: "1rem" }}
-              ></i>
-              <div className="flex gap-x-1">
-                {/* {sizes.map((size, index) => {
-                  return (
-                    <p key={index} className="">
-                      {size}
-                    </p>
-                  );
-                })} */}
-              </div>
-            </div>
-            <p>{colors}</p>
-            <p>{name}</p>
-            <div className="flex justify-between">
-              <p className=" border-green-600 text-green-600 px-2 py-1 border-2 rounded-md mt-2">
-                Khs {price}
-              </p>
-              <p> {reviews}</p>
-            </div>
-
-    </div>)
+    <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md" >
+          <img src={image} alt="Product" className="w-full h-[50%] mb-4 rounded-lg" />
+          <h3 className="text-lg font-semibold text-center">{name}</h3>
+          <p className="text-center">Price: KSh {price}</p>
+          <button className="px-4 py-2 mt-4 text-white bg-pink rounded-full" onClick={() => navigate(`/products/:${id}`)}>SHOP NOW</button>
+        </div>
+    )
 };
 
 export default ProductItem;
