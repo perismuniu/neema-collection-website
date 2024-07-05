@@ -17,9 +17,6 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     addToCart(dispatch, token, product._id, buyingQuantity )
   }
-  const handleQuantityChange = () => {
-    setByingQuantity(buyingQuantity + 1)
-  }
 
   return (
     <div className="flex flex-col md:flex-row bg-off-white p-4">
@@ -78,14 +75,16 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="mt-4 flex items-center">
-          <h2 className="font-semibold mr-2 text-gray">Quantity</h2>
-          <button className="border rounded-l-lg px-4 py-2" onClick={() => handleQuantityChange(product._id, product.buyingQuantity - 1)}>-</button>
+
+          <h2 className="font-semibold mr-2">Quantity</h2>
+          <button className="border rounded-l-lg px-4 py-2" onClick={() => setByingQuantity(buyingQuantity - 1)}>-</button>
           <span className="border-t border-b px-4 py-2">{buyingQuantity < 1 ? setByingQuantity(1) : buyingQuantity}</span>
-          <button className="border rounded-r-lg px-4 py-2" onClick={() => handleQuantityChange(product._id, product.buyingQuantity + 1)}>+</button>
+          <button className="border rounded-r-lg px-4 py-2" onClick={() => setByingQuantity(buyingQuantity + 1)}>+</button>
         </div>
         <div className="mt-4 flex space-x-2">
-          <button className="bg-light-pink text-white px-6 py-2 rounded-lg font-bold text-lg" onClick={() => handleAddToCart(product._id)}>Add to cart</button>
+          <button className="bg-light-pink text-white px-6 py-2 rounded-lg font-bold text-lg" onClick={() => handleAddToCart()}>Add to cart</button>
           <button className="border border-light-pink gray px-6 py-2 rounded-lg text-light-pink font-bold text-lg">Wishlist</button>
+          {/*<h2 className="font-semibold mr-2 text-gray">Quantity</h2>*/}
         </div>
       </div>
     </div>
