@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SignUp from "../assets/signup.png";
 import BusinessLogoBlack from "../assets/NeemaCollection-color_black.svg";
 import GoogleLogo from "../assets/google.png";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/userSlice";
