@@ -14,9 +14,8 @@ const userSlice = createSlice({
       _id: null,
       wallet: null
     },
-   logout:
-      null,
-    loginError: null,
+   logout: null,
+    loginError: "",
     loginLoading: false,
     logoutError: null
   },
@@ -50,7 +49,6 @@ export const login = async (loginData:any, dispatch:any) => {
     dispatch(setLoginLoading(true))
     const res = await axios.post("http://localhost:3001/api/auth/login", loginData);
     const token = res.data.token;
-    console.log(res.data.userData)
     const user = res.data.userData; // assuming the API returns the user data without password
     dispatch(setCredentials(token));
     dispatch(setUser(user));
@@ -58,8 +56,8 @@ export const login = async (loginData:any, dispatch:any) => {
     return user
   } catch (error) {
     console.log(error);
-    dispatch(setLoginError(error.response))
     dispatch(setLoginLoading(false))
+    dispatch(setLoginError(error.response))
   }
 }
 

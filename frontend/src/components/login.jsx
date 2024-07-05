@@ -6,13 +6,20 @@ import { useEffect, useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/userSlice";
+import { ProgressSpinner } from 'primereact/progressspinner';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
+
+
 
 const Login = () => {
   const ErrorToast = useRef(null);
   const [loginData, setLoginData] = useState({ email: "", password: "" }); // Initialize as empty object
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.loginLoading);
-  const loginError = useSelector((state) => state.loginError);
+  const isLoading = useSelector((state) => state.auth.loginLoading);
+  const loginError = useSelector((state) => state.auth.loginError);
   // const loggedInUser = useSelector((state) => state.user);
   const navigate = useNavigate();
 
@@ -27,31 +34,23 @@ const Login = () => {
     });
   };
 
-  useEffect(() => {
-    if (loginError) {
-      showMessage(loginError, ErrorToast, "error");
-    }
-  }, [loginError]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = await login(loginData, dispatch);
-    console.log(user)
+    if (loginError) {
+      showMessage(loginError, ErrorToast, "error");
+    }
     if (user) {
+      showMessage("Successfuly logged in", ErrorToast, "success")
     if (user.isAdmin) {
-      console.log(user.isAdmin)
       navigate("/dashboard");
     } else {
       navigate("/");
     }
   }
   };
-
-  // useEffect(() => {
-  //   loggedInUser && loggedInUser.isAdmin === true
-  //   ? navigate("/dashboard")
-  //   : ""; // If user is logged in, redirect to dashboard
-  // }, [loggedInUser, navigate])
 
   return (
     <div className="bg-off-white bg-cover absolute inset-0 h-screen w-full text-lg">
@@ -119,7 +118,8 @@ const Login = () => {
                 type="submit"
                 className="bg-light-pink w-24 mt-3 h-8 mx-auto text-center text-white font-bold rounded-md text-lg py-1"
               >
-                {isLoading ? "Logging in..." : "Welcome"}
+                {isLoading ? <span>Loading             <ProgressSpinner style={{width: '20px', height: '20px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
+                </span> : "Welcome"}
               </button>
             </form>
             <hr className="border-gray mt-8"></hr>
