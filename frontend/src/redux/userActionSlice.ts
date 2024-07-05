@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as io from "socket.io-client";
+import { persistor } from "./store";
+import { setCredentials, setUser } from "./userSlice";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -226,17 +228,20 @@ export const getOrders = async (dispatch: any, token: any) => {
 }
 
 
-export const logout = async (token: any, dispatch: any) => {
-  try {
-    await axios.get("http://localhost:3001/api/auth/logout", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }) 
-    dispatch(setUserCart({}))
-  } catch (error) {
-    alert("Error Logging out!")
-  }
-}
+// export const logout = async (token: any, dispatch: any) => {
+//   try {
+//     await axios.get("http://localhost:3001/api/auth/logout", {
+//       headers: {
+//         Authorization: `Bearer ${token}`
+//       }
+//     }) 
+//     dispatch(setUserCart({})); // clear user cart
+//     dispatch(setCredentials(null)); // clear token
+//     dispatch(setUser(null)); // clear user data
+//     persistor.purge(); // clear persisted state
+//   } catch (error) {
+//     alert("Error Logging out!")
+//   }
+// }
 
 export default dataSlice.reducer;

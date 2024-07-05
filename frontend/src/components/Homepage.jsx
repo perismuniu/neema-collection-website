@@ -3,21 +3,23 @@ import ProductItem from './products/productitem';
 import ProductCard from './products/productcard';
 import {useDispatch, useSelector} from "react-redux"
 import { useEffect } from "react";
-import { getProducts } from "../redux/userActionSlice";
+import { getProducts, getUserCart } from "../redux/userActionSlice";
 
 
 const Homepage = () => {
   const products = useSelector(state => state.data.products)
   const dispatch = useDispatch()
-  // const usercart = useSelector(state => state.data.usercart)
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector(state => state.auth.token)
 
   console.log(products)
   console.log("next is useEffect")
   
   // dispatch(getProducts(dispatch))
   useEffect(() => {
-    console.log("I'm here")
-    getProducts(dispatch)
+    getProducts(dispatch).then(()=> {
+      user ? getUserCart(dispatch, token) : null
+    })
   }
   ,[]);
   

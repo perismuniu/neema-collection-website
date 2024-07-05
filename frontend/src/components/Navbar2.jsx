@@ -4,8 +4,12 @@ import Cart from "../assets/cart.svg";
 import Person from "../assets/person.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/userActionSlice";
+import {  setUserCart } from "../redux/userActionSlice";
 import { setSearchQuery } from "../redux/searchSlice";
+import { persistor } from "../redux/store";
+import { setCredentials, setUser } from "../redux/userSlice";
+import axios from "axios";
+
 
 const Navbar = () => {
   const [menuVisibility, setMenuVisibility] = useState(false);
@@ -28,33 +32,60 @@ const Navbar = () => {
     navigate("/user/cart");
   };
 
-  const handleLogout = () => {
-    logout(token, dispatch)
-      .then(() => {
-        dispatch({
-          type: "auth",
-          payload: {
-            token: null,
-            user: {
-              isAdmin: false,
-              name: null,
-              email: null,
-              phone: null,
-              address: null,
-              _id: null,
-              wallet: null,
-            },
-            logout: null,
-            loginError: null,
-            loginLoading: false,
-            logoutError: null,
-          },
-        });
-      })
-      .then(() => {
-        navigate("/");
-      });
-  };
+  console.log(Boolean(user))
+
+
+  const handleLogout = async () => {
+      try {
+        await axios.get("http://localhost:3001/api/auth/logout", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }) 
+        dispatch(setUserCart({})); // clear user cart
+        dispatch(setCredentials(null)); // clear token
+        dispatch(setUser(null)); // clear user data
+        persistor.purge(); // clear persisted state
+        navigate("/")
+      } catch (error) {
+        alert("Error Logging out!")
+      }
+    }
+
+  // const handleLogout = () => {
+  //   logout(token, dispatch)
+  //     .then(() => {
+  //       dispatch({
+  //         type: "auth",
+  //         payload: {
+  //           token: null,
+  //           user: {
+  //             isAdmin: false,
+  //             name: null,
+  //             email: null,
+  //             phone: null,
+  //             address: null,
+  //             _id: null,
+  //             wallet: null,
+  //           },
+  //           logout: null,
+  //           loginError: null,
+  //           loginLoading: false,
+  //           logoutError: null,
+  //         },
+  //       })
+  //       purgeStoredState()
+  //     })
+  //     .then(() => {
+  //      dispatch({
+  //       type: "data",
+  //       payload: {
+  //         userCart: null,
+  //       }
+  //      })
+  //     }).finally(navigate("/"))
+  // };
+
 
   const totalQuantity = userCart.items?.reduce(
     (acc, item) => acc + item.buyingQuantity,
@@ -109,7 +140,7 @@ const Navbar = () => {
           <img
             src={Person}
             className="h-10 my-auto cursor-pointer"
-            onClick={() => (user ? setMenuVisibility(!menuVisibility) : navigate("/auth/signin"))}
+            onClick={() => (user ? setMenuVisibility(!menuVisibility) : navigate("/auth/login"))}
             alt="User"
           />
           {menuVisibility && (
@@ -147,7 +178,7 @@ const Navbar = () => {
             alt="Cart"
           />
           <div
-            className={`absolute flex flex-col right-2 top-2 bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}
+            className={`absolute flex flex-col right-2 top-2 ${!user ? "hidden" : ""} bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}
           >
             {totalQuantity}
           </div>

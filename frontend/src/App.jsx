@@ -24,6 +24,8 @@ function App() {
   
   const user = useSelector(state => state.auth.user)
 
+  console.log(`App.jsx user verification ${Boolean(user)}`)
+
 
 function RequireAdmin ({ children }) {
 
@@ -72,10 +74,10 @@ function RequireAuth({ children }) {
           </Route>            
           <Route path="/" element={<Homepage />} />
           <Route path="cart/checkout" element={ <RequireAuth> <Payment /></RequireAuth> } />
-          <Route path="orderlist" element={<OrderList/>} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="user/settings" element={<Settings />} />
-          <Route path="user/cart" element={<ShoppingCart />} />
+          <Route path="orderlist" element={<RequireAuth><OrderList/></RequireAuth>} />
+          <Route path="orders" element={<RequireAuth><Orders /></RequireAuth>} />
+          <Route path="user/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+          <Route path="user/cart" element={<RequireAuth><ShoppingCart /></RequireAuth>} />
           <Route path="/products/*" element={<ProductDetail />} />
         </Routes>
       </BrowserRouter>
