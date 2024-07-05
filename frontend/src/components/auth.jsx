@@ -21,8 +21,8 @@ const Auth = () => {
         <h1 className="bg-#FFFFF-500 mt-10 text-center font-Pacifico text-lg text-gray">
           neema collection
         </h1>
-        <div className="flex flex-row mt-10 justify-center font-Outfit">
-          <div className="bg-gray-light flex flex-row w-96 rounded-l-md">
+        <div className="flex flex-row mt-10 justify-center font-Outfit ">
+          <div className="bg-gray-light hidden flex-row w-96 rounded-l-md md:flex">
             <img src={SignUpIcon} className="w-64 mx-auto my-auto h-56"></img>
             {/* The signup button is rendered in the top right corner of the signup page. */}
             <div className="mt-32 flex flex-col content-end ml-3 px-auto py-auto">

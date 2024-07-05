@@ -59,7 +59,7 @@ const Login = () => {
         neema collection
       </h1>
       <div className="flex flex-row mt-10 justify-center font-Outfit">
-        <div className="bg-gray-light flex flex-row w-96 rounded-l-md h-96">
+        <div className="bg-gray-light hidden flex-row w-96 rounded-l-md h-96 md:flex">
           <img
             src={SignUp}
             key="signup"
