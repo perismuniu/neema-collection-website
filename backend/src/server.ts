@@ -85,7 +85,9 @@ app.post('/api/getcartwithproducts', async (req, res) => {
   }
 
   const productIds = cart.items.map((item: any) => item.productId);
-  const products = await Product.find({ _id: { $in: productIds } });
+
+  const products = await Product.find({ _id: { $in: productIds } }).exec();
+
   cart.items = cart.items.map((item: any) => {
     const product = products.find(p => p._id.toString() === item.productId.toString());
     return {...item, product };

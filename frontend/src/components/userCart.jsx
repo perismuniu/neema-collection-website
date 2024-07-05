@@ -17,9 +17,11 @@ const ShoppingCart = () => {
 
   const dispatch = useDispatch();
 
+  // getUserCart(dispatch, token)
+
   useEffect(() => {
     getUserCart(dispatch, token)
-  },[])
+  }, [])
 
   const handleRemove = (productId) => {
     dispatch(removeFromCart(productId));
@@ -28,10 +30,6 @@ const ShoppingCart = () => {
   const handleQuantityChange = (productId, quantity) => {
     dispatch(updateQuantity({ productId, quantity }));
   };
-  console.log(cartItems)
-
-
-  cartItems.map(i => console.log(i))
 
   return (
     <div className="container mx-auto p-4">
@@ -42,34 +40,44 @@ const ShoppingCart = () => {
       <div className="flex flex-col md:flex-row justify-between">
         <div className="flex-1">
           {cartItems.map((item) => (
+            item.product ?
             <div key={item.productId} className="flex items-center border-b py-4">
-              <img src={item.product.image[0]} alt={item.product.title} className="w-24 h-24" />
-              <div className="ml-4 flex-1">
-                <h2 className="text-xl font-semibold">{item.product.title}</h2>
-                <p className="text-gray-600">{item.product.category}</p>
-                <p className="text-green-500 font-bold">{`KHs${item.product.price}`}</p>
-                <div className="flex items-center mt-2">
-                  <button
-                    className="text-gray-500"
-                    onClick={() => handleQuantityChange(item.productId, item.buyingQuantity - 1)}
-                  >
-                    -
-                  </button>
-                  <span className="mx-2" min={1}>{item.buyingQuantity}</span>
-                  <button
-                    className="text-gray-500"
-                    onClick={() => handleQuantityChange(item.productId, item.buyingQuantity + 1)}
-                  >
-                    +
-                  </button>
-                </div>
+            <img src={item.product.image[0]} alt={item.product.title} className="w-24 h-24" />
+            <div className="ml-4 flex-1">
+              <h2 className="text-xl font-semibold">{item.product?.title}</h2>
+              <p className="text-gray-600">{item.product?.category}</p>
+              <p className="text-green-500 font-bold">{`KHs${item.product?.price}`}</p>
+              <div className="flex items-center mt-2">
+                <button
+                  className="text-gray-500"
+                  onClick={() => handleQuantityChange(item.productId, item.buyingQuantity - 1)}
+                >
+                  -
+                </button>
+                <span className="mx-2" min={1}>{item.buyingQuantity}</span>
+                <button
+                  className="text-gray-500"
+                  onClick={() => handleQuantityChange(item.productId, item.buyingQuantity + 1)}
+                >
+                  +
+                </button>
               </div>
+            </div>
+            <button
+              className="text-blue-500 ml-4"
+              onClick={() => handleRemove(item.productId)}
+            >
+              Remove
+            </button>
+            </div>
+            : <div key={item.productId} className="flex items-center border-b py-4 justify-between">
+              <p>This product is no more available</p>
               <button
-                className="text-blue-500 ml-4"
-                onClick={() => handleRemove(item.productId)}
-              >
-                Remove
-              </button>
+              className="text-blue-500 ml-4"
+              onClick={() => handleRemove(item.productId)}
+            >
+              Remove
+            </button>
             </div>
           ))}
         </div>
