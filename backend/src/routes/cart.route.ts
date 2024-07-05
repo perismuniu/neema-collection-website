@@ -6,7 +6,7 @@ const cartRoute = Router()
 
 cartRoute.post("/addtocart/:productId", isAuthenticated, addToCart )
 cartRoute.get("/getcart", isAuthenticated, getCart)
-cartRoute.delete("/removefromcart", isAuthenticated, removeFromCart)
+cartRoute.delete("/removefromcart/:id", isAuthenticated, removeFromCart)
 
 
 export default cartRoute

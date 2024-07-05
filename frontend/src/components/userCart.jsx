@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserCart, removeFromCart, updateQuantity } from '../redux/userActionSlice';
+import { getUserCart, setIsSuccess, updateQuantity } from '../redux/userActionSlice';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ShoppingCart = () => {
   const cartItems = useSelector((state) => state.data.userCart.items);
@@ -23,13 +24,27 @@ const ShoppingCart = () => {
     getUserCart(dispatch, token)
   }, [])
 
-  const handleRemove = (productId) => {
-    dispatch(removeFromCart(productId));
+  const handleRemove = async (itemID) => {
+    console.log(itemID)
+    try {
+      const res = await axios.delete(`http://localhost:3001/api/removefromcart/${itemID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        getUserCart(dispatch, token)
+        dispatch(setIsSuccess(true))
+        console.log(res)
+    }catch(err){
+      console.log(err)
+    }
   };
 
   const handleQuantityChange = (productId, quantity) => {
     dispatch(updateQuantity({ productId, quantity }));
   };
+
+  console.log(cartItems)
 
   return (
     <div className="container mx-auto p-4">
@@ -65,7 +80,7 @@ const ShoppingCart = () => {
             </div>
             <button
               className="text-blue-500 ml-4"
-              onClick={() => handleRemove(item.productId)}
+              onClick={() => handleRemove(item._id)}
             >
               Remove
             </button>
@@ -74,7 +89,7 @@ const ShoppingCart = () => {
               <p>This product is no more available</p>
               <button
               className="text-blue-500 ml-4"
-              onClick={() => handleRemove(item.productId)}
+              onClick={() => handleRemove(item._id)}
             >
               Remove
             </button>

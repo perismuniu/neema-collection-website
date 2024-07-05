@@ -1,6 +1,5 @@
 import { Cart } from "../Models/cart.model";
 import { Product } from "../Models/product.model";
-import { getCartProducts } from "../utils/getCartProducts";
 
 export const addToCart = async (req: any, res: any) => {
     const { buyingQuantity } = req.body;
@@ -33,7 +32,7 @@ export const addToCart = async (req: any, res: any) => {
                 cartItem[itemIndex].buyingQuantity += buyingQuantity
                 cartItem[itemIndex].buyingItemTotalPrice += item.price * buyingQuantity
                 cart.buyingTotalPrice += item.price * buyingQuantity
-            } 
+            }
             else {
                 cartItem.push({
                     productId: productId,
@@ -65,7 +64,7 @@ export const getCart = async (req: any, res: any) => {
             return res.status(404).json({ message: "Cart not found" });
         }
         // const products = await getCartProducts(cart._id);
-        return res.status(200).json({cart});
+        return res.status(200).json({ cart });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -73,32 +72,49 @@ export const getCart = async (req: any, res: any) => {
 }
 
 export const removeFromCart = async (req: any, res: any) => {
-    const { productId } = req.body;
+  const { id } = req.params;
+  let itemIndex;
 
-
-    try {
-        const userId = req.user._id
-        const cart = await Cart.findOne({ user: userId });
-        if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
-        }
-
-        const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
-  if (itemIndex === -1) {
-    throw new Error('Item not found in cart');
-  }
-
-  cart.items.splice(itemIndex, 1);
-
-  cart.totalQuantity = cart.items.reduce((acc, item) => acc + item.buyingQuantity, 0);
-
-  cart.buyingTotalPrice = cart.items.reduce((acc, item) => acc + (item.buyingQuantity * item.productId.price), 0);
-
-  await cart.save();
- return res.status(201).json(cart);
-
-    } catch (error) {
-        console.log(error)
-        res.send(error)
+  try {
+    const userId = req.user._id;
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
     }
-}
+
+    const updatedCart = await getcartwithproducts(cart);
+    itemIndex = updatedCart.items.findIndex((item: any) => item._id.toString() === id.toString());
+
+    if (itemIndex === -1) {
+      return res.status(403).json({ message: "Product not found in cart" });
+    }
+
+    cart.items.splice(itemIndex, 1);
+
+    // No need to recalculate totalQuantity and buyingTotalPrice manually
+    // as they are virtual properties that will be updated automatically
+
+    await cart.save();
+    const finalCart = await getcartwithproducts(cart);  // Get the updated cart after removal
+    return res.status(201).json(finalCart);
+  } catch (error) {
+    console.log(error);
+    res.send(error);
+  }
+};
+
+export const getcartwithproducts = async (cart: any) => {
+    if (!cart) {
+        return "not a cart";
+    }
+
+    const productIds = cart.items.map((item: any) => item.productId);
+    const products = await Product.find({ _id: { $in: productIds } }).exec();
+
+    cart.items = cart.items.map((item: any) => {
+        const product = products.find(p => p._id.toString() === item.productId.toString());
+        return { ...item, product };
+    });
+
+    return cart;
+};

@@ -11,6 +11,7 @@ const dataSlice = createSlice({
   initialState: {
     products: [],
     loading: false,
+    isSuccess: false,
     error: null,
     insights: [] ,
     userCart: {
@@ -54,11 +55,11 @@ const dataSlice = createSlice({
     setUserCart: (state, action) => {
       state.userCart = action.payload;
     },
-    removeFromCart: (state, action) => {
-      state.userCart.items = state.userCart.items.filter((item) => item.productId !== action.payload);
-    },
     setInsights: (state, action) => {
       state.insights = action.payload;
+    },
+    setIsSuccess: (state, action) => {
+      state.isSuccess = action.payload;
     },
     updateQuantity: (state, action) => {
       const { productId, quantity } = action.payload;
@@ -78,10 +79,10 @@ export const {
   setProducts,
   setUserCart,
   updateQuantity,
-  removeFromCart,
   setInsights,
   setOrders,
   setError,
+  setIsSuccess,
   setLoading
 } = dataSlice.actions;
 
@@ -140,6 +141,7 @@ export const deleteProduct = async (dispatch:any, id:any, token:any) => {
     })
     res.status === 200 ? dispatch(getProducts(dispatch)) : alert("something went wrong")
     dispatch(setLoading(false))
+    dispatch
   } catch (error) {
     dispatch(setError(error.data))
     dispatch(setLoading(false))
@@ -147,8 +149,9 @@ export const deleteProduct = async (dispatch:any, id:any, token:any) => {
 }
 
 export const getUserCart = async (dispatch: any, token: any) => {
+  console.log("I am running");
   try {
-    dispatch(setError(true));
+    dispatch(setLoading(true));
     const res = await axios.get(`http://localhost:3001/api/getcart`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -157,18 +160,18 @@ export const getUserCart = async (dispatch: any, token: any) => {
     const data = res.data;
 
     // Use $lookup to fetch product details
-    const cartWithProducts = await axios.post(`http://localhost:3001/api/getcartwithproducts`, data.cart);
-    console.log(cartWithProducts.data)
+    const cartWithProducts = await axios.post(`http://localhost:3001/api/getcartwithproducts`, { cart: data.cart });
+    console.log(cartWithProducts.data);
 
     dispatch(setUserCart(cartWithProducts.data));
     dispatch(setLoading(false));
   } catch (error) {
-    alert(error.data)
-
-    dispatch(setError(error.response));
+    alert(error.response.data.message);
+    dispatch(setError(error.response.data));
     dispatch(setLoading(false));
   }
 };
+
 
 export const addToCart = async (
   dispatch: any,
@@ -196,22 +199,6 @@ export const addToCart = async (
   }
 };
 
-// export const removeFromCart = async (dispatch: any, token: any, productId: any) => {
-//   try {
-//     const res = await axios.delete(`http://localhost:3001/api/removefromcart`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//       data: { productId },
-//     });
-//     const data = res.data;
-//     console.log(data)
-//     dispatch(setUserCart(data));
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
 export const getOrders = async (dispatch: any, token: any) => {
   try {
     const res = await axios.get(`http://localhost:3001/api/orders`, {
@@ -226,22 +213,5 @@ export const getOrders = async (dispatch: any, token: any) => {
     
   }
 }
-
-
-// export const logout = async (token: any, dispatch: any) => {
-//   try {
-//     await axios.get("http://localhost:3001/api/auth/logout", {
-//       headers: {
-//         Authorization: `Bearer ${token}`
-//       }
-//     }) 
-//     dispatch(setUserCart({})); // clear user cart
-//     dispatch(setCredentials(null)); // clear token
-//     dispatch(setUser(null)); // clear user data
-//     persistor.purge(); // clear persisted state
-//   } catch (error) {
-//     alert("Error Logging out!")
-//   }
-// }
 
 export default dataSlice.reducer;
