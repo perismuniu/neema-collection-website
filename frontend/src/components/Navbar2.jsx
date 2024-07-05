@@ -41,50 +41,17 @@ const Navbar = () => {
           headers: {
             Authorization: `Bearer ${token}`
           }
-        }) 
-        dispatch(setUserCart({})); // clear user cart
+        }).then(() => {
+          dispatch(setUserCart({})); // clear user cart
         dispatch(setCredentials(null)); // clear token
         dispatch(setUser(null)); // clear user data
         persistor.purge(); // clear persisted state
-        navigate("/")
+        navigate("/", {replace: true})
+        })
       } catch (error) {
         alert("Error Logging out!")
       }
     }
-
-  // const handleLogout = () => {
-  //   logout(token, dispatch)
-  //     .then(() => {
-  //       dispatch({
-  //         type: "auth",
-  //         payload: {
-  //           token: null,
-  //           user: {
-  //             isAdmin: false,
-  //             name: null,
-  //             email: null,
-  //             phone: null,
-  //             address: null,
-  //             _id: null,
-  //             wallet: null,
-  //           },
-  //           logout: null,
-  //           loginError: null,
-  //           loginLoading: false,
-  //           logoutError: null,
-  //         },
-  //       })
-  //       purgeStoredState()
-  //     })
-  //     .then(() => {
-  //      dispatch({
-  //       type: "data",
-  //       payload: {
-  //         userCart: null,
-  //       }
-  //      })
-  //     }).finally(navigate("/"))
-  // };
 
 
   const totalQuantity = userCart.items?.reduce(
