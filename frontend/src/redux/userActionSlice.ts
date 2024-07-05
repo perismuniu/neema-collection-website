@@ -145,7 +145,6 @@ export const deleteProduct = async (dispatch:any, id:any, token:any) => {
 }
 
 export const getUserCart = async (dispatch: any, token: any) => {
-  console.log("I am triggered")
   try {
     dispatch(setError(true));
     const res = await axios.get(`http://localhost:3001/api/getcart`, {
@@ -155,7 +154,6 @@ export const getUserCart = async (dispatch: any, token: any) => {
     });
     const data = res.data;
 
-    console.log(data.cart, "")
     // Use $lookup to fetch product details
     const cartWithProducts = await axios.post(`http://localhost:3001/api/getcartwithproducts`, data.cart);
     console.log(cartWithProducts.data)
