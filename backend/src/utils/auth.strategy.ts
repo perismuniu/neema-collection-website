@@ -33,7 +33,6 @@ const opts = {
     (req: Request) => {
      
       const { jwt } = req.session as any
-      // console.log(req.session)
       return jwt;
     },
   ]),

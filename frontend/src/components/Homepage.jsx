@@ -9,12 +9,17 @@ import { getProducts } from "../redux/userActionSlice";
 const Homepage = () => {
   const products = useSelector(state => state.data.products)
   const dispatch = useDispatch()
-  const usercart = useSelector(state => state.data.usercart)
+  // const usercart = useSelector(state => state.data.usercart)
 
-  console.log(usercart)
+  console.log(products)
+  console.log("next is useEffect")
+  
+  // dispatch(getProducts(dispatch))
   useEffect(() => {
+    console.log("I'm here")
     getProducts(dispatch)
-  },[dispatch])
+  }
+  ,[]);
   
   return (
     <div className="bg-off-white min-h-screen  px-6 lg:px-48 bg-cover">

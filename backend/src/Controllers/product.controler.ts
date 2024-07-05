@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Product } from "../Models/product.model";
 
 export const getAllProducts = async (req: Request, res: Response) => {
+
     try {
         const products = await Product.find({});
         if (products.length === 0) {
@@ -94,14 +95,17 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 export const deleteProduct = async (req: Request, res: Response) => {
     const {productId} = req.params;
+    console.log(productId)
+
     try {
         const product = await Product.findByIdAndDelete(productId);
         if (!product) {
+            console.log(`product not found`)
             res.json({message: 'Product not found'});
         } else {
+            console.log(`product deletion complete`)
             res.json({product});
         }
-        
     } catch (error) {
         console.log(error);
         res.status(500).json({message: 'Error deleting product'});

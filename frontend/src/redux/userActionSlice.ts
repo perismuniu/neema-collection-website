@@ -105,6 +105,7 @@ export const getProducts = async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
     const res = await axios.get(`http://localhost:3001/api/products`);
+    console.log("Getting products", res.data);
     const data = res.data;
     dispatch(setProducts(data));
     dispatch(setLoading(false));
@@ -129,11 +130,17 @@ export const getProductById = async (id: any) => {
 export const deleteProduct = async (dispatch:any, id:any, token:any) => {
 
   try {
-    const res = await axios.delete(`http://localhost:3001/products/:${id}`)
-    const data = res.data
-    dispatch(setProducts(data))
+    dispatch(setLoading(true))
+    const res = await axios.delete(`http://localhost:3001/api/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    res.status === 200 ? dispatch(getProducts(dispatch)) : alert("something went wrong")
+    dispatch(setLoading(false))
   } catch (error) {
     dispatch(setError(error.data))
+    dispatch(setLoading(false))
   }
 }
 

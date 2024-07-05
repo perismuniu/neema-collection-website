@@ -2,27 +2,16 @@
 import {  useEffect } from "react";
 import { useDispatch } from "react-redux";
  import { Link, Outlet, useLocation } from "react-router-dom";
-// import io from "socket.io-client";
 import { inSight } from "../redux/userActionSlice";
 
 
 const Dashboard = () => {
-  // const [error, setError] = useState("");
-  // const token = localStorage.getItem("neematoken")
   const dispatch = useDispatch()
   const location = useLocation().pathname
 
-
-
-
-  // On page load, get list of products from the backend using WebSocket
   useEffect(() => {
     inSight(dispatch)
   }, []);
-
-  // if(error) {
-  //   return <div>Error fetching! make sure you&apos;re logged in!</div>
-  // }
 
   const components = [
 

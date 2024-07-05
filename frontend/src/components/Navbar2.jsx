@@ -109,7 +109,7 @@ const Navbar = () => {
           <img
             src={Person}
             className="h-10 my-auto cursor-pointer"
-            onClick={() => (user ? setMenuVisibility(!menuVisibility) : null)}
+            onClick={() => (user ? setMenuVisibility(!menuVisibility) : navigate("/auth/signin"))}
             alt="User"
           />
           {menuVisibility && (

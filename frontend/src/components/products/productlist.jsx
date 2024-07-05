@@ -23,7 +23,7 @@ function ProductList() {
   const handleRemove = (id) => {
     // Remove product from the array
     dispatch(setProducts(products.filter((product) => product._id !== id)))
-    deleteProduct(dispatch, token, id)
+    deleteProduct(dispatch, id, token)
   };
 
   return (

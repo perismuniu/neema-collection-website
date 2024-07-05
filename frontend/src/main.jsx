@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <PrimeReactProvider>
       <Provider store={store}>
         <App />
-        {persistor.persist()}
+        {/* {persistor.persist()} */}
       </Provider>
     </PrimeReactProvider>
   </React.StrictMode>

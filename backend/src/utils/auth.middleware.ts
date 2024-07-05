@@ -8,10 +8,12 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
       return res.status(401).json({ message: info.message });
     }
     req.user = user;
+    console.log(`is authenticated`)
     next();
   })(req, res, next);
 };
 
 export const isAdmin = (req: any, res: Response, next: NextFunction) => {
+
   req.user.isAdmin ? next() : res.json({message: `You are not allowed to perform this action`})
 };

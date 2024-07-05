@@ -30,7 +30,7 @@ const db_connect = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PA
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],},
 } as any );
 

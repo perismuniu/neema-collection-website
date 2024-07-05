@@ -1,15 +1,25 @@
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { Toast } from 'primereact/toast';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 const AddProducts = () => {
   const [files, setFiles] = useState([]);
+  const toastCenter = useRef(null);
+  const toastTopCenter = useRef(null);
   const [loading, setLoading] = useState(false);
   const [res, setRes] = useState([]);
   const [data, setData] = useState({});
   const [activeInput, setActiveInput] = useState("title");
-  const token = useSelector(state => state.auth.token)
+  const token = useSelector(state => state.auth.token);
 
+
+  const showMessage = (event, ref, severity) => {
+    const label = event.response.data.message;
+
+    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
+};
 
   const info = [
     { name: "title", type: "text" },
@@ -17,7 +27,7 @@ const AddProducts = () => {
     { name: "stock", type: "number", min: 1, max: 100 },
     { name: "image", type: "file" },
     { name: "color", type: "text" },
-    {name: "size", type: "text"},
+    { name: "size", type: "text" },
     { name: "category", type: "text" },
   ];
 
@@ -42,9 +52,12 @@ const AddProducts = () => {
       });
       const results = await Promise.all(promises);
       setRes(results.map((res) => res.data));
-      data.image = results.map((res) => res.data[0].secure_url);
+      setData(prevData => ({
+        ...prevData,
+        image: results.map((res) => res.data[0].secure_url)
+      }));
     } catch (error) {
-      alert(error.message);
+      showMessage(error, toastCenter, "error")
     } finally {
       setLoading(false);
     }
@@ -62,18 +75,23 @@ const AddProducts = () => {
           },
         }
       );
-      if (res.status === 201) {
-        alert("Product added successfully");
+      console.log(res);
+      if (res.status === 200) {
+        showMessage(res.data, toastCenter, "success")
+        setData({});
+        setFiles([]);
+        setRes([]);
       }
     } catch (error) {
       console.log(error);
-      alert(error.response.data.message);
+      showMessage(error, toastCenter, "error") //error.response.data.message
     }
-    setData({});
   };
 
   return (
     <form className="px-8 h-[58vh]" onSubmit={handleSubmit}>
+      <Toast ref={toastCenter} position="center" />
+      <Toast ref={toastTopCenter} position="top-center" />
       <h3>Add Products</h3>
       <div className="flex gap-x-3">
         <div className="flex-1">
@@ -98,6 +116,7 @@ const AddProducts = () => {
                 }
                 min={info.min}
                 id={info.name}
+                value={info.name === "image" ? "" : data[info.name] || ""}
                 onChange={(e) =>
                   info.name !== "image"
                     ? setData({ ...data, [info.name]: e.target.value })
@@ -134,6 +153,7 @@ const AddProducts = () => {
               className="outline-none pl-4 h-[158px]"
               id="description"
               placeholder="Add product description"
+              value={data.description || ""}
               onChange={(e) =>
                 setData({ ...data, description: e.target.value })
               }
