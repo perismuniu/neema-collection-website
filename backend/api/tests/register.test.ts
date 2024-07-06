@@ -1,7 +1,8 @@
 // api.test.ts
 import request from 'supertest';
-import app from "../../src/server"
+
 import { UserModel as User } from '../Models/user.model';
+import app from '../index';
 
 
 describe('API Tests', () => {
