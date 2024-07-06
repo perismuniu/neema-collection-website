@@ -1,39 +1,32 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 // Product Interface
-export interface IProduct {
+export interface IProduct extends Document {
   price: number;
-  _id: mongoose.Schema.Types.ObjectId;
-  title: String;
-  description: String;
-  image: String;
-  colors: [
-    {
-      color: String;
-      stock:
-        {
-          size: String;
-          quantity: number;
-        }
-      ;
-    }
-  ];
+  title: string;
+  description: string;
+  image: string[];
+  colors: {
+    color: string;
+    stock: {
+      size: string;
+      quantity: number;
+    };
+  }[];
   category: string;
   discount: number;
   rating: number;
-  reviews: [
-    {
-      rating: number;
-      review: String;
-      username: String;
-    }
-  ];
+  reviews: {
+    rating: number;
+    review: string;
+    username: string;
+  }[];
   stock: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// product schema
+// Product Schema
 export const ProductSchema = new Schema<IProduct>(
   {
     title: {
@@ -47,7 +40,7 @@ export const ProductSchema = new Schema<IProduct>(
     price: {
       type: Number,
       required: true,
-      format: /^[0-9]*$/,
+      match: /^[0-9]*$/,
     },
     image: [
       {
@@ -63,29 +56,36 @@ export const ProductSchema = new Schema<IProduct>(
     },
     colors: [
       {
-        color: String,
-        stock:
-          {
-            size: {
-              type: String,
-              required: true,
-              enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
-            },
-            quantity: {
-              type: Number,
-              required: true,
-              match: /^[0-9]*$/,
-            },
+        color: { type: String, required: true },
+        stock: {
+          size: {
+            type: String,
+            required: true,
+            enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
           },
+          quantity: {
+            type: Number,
+            required: true,
+            match: /^[0-9]*$/,
+          },
+        },
+      },
+    ],
+    discount: { type: Number, required: false },
+    rating: { type: Number, required: false },
+    reviews: [
+      {
+        rating: { type: Number, required: false },
+        review: { type: String, required: false },
+        username: { type: String, required: false },
       },
     ],
   },
   { timestamps: true }
 );
 
-
-export const Product = mongoose.model<IProduct>("product", ProductSchema);
-
-ProductSchema.virtual("stock").get(function() {
+ProductSchema.virtual("stock").get(function () {
   return this.colors.reduce((acc, color) => acc + color.stock.quantity, 0);
 });
+
+export const Product = mongoose.model<IProduct>("Product", ProductSchema);

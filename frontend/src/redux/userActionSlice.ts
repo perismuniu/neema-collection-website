@@ -61,24 +61,23 @@ const dataSlice = createSlice({
     setIsSuccess: (state, action) => {
       state.isSuccess = action.payload;
     },
-    updateQuantity: (state, action) => {
-      const { productId, quantity } = action.payload;
-      const item = state.userCart.items.find((item) => item.productId === productId);
-      if (item) {
-        const quant = quantity < 1 ? 1 : quantity
-        item.buyingQuantity = quant;
+    // updateQuantity: (state, action) => {
+    //   const { productId, quantity } = action.payload;
+    //   const item = state.userCart.items.find((item) => item.productId === productId);
+    //   if (item) {
+    //     const quant = quantity < 1 ? 1 : quantity
+    //     item.buyingQuantity = quant;
 
-          item.buyingItemTotalPrice = item.product.price * quant; // update this line
-      }
-      state.userCart.buyingTotalPrice = state.userCart.items.reduce((total, item) => total + item.buyingItemTotalPrice, 0);
-    },
+    //       item.buyingItemTotalPrice = item.product.price * quant; // update this line
+    //   }
+    //   state.userCart.buyingTotalPrice = state.userCart.items.reduce((total, item) => total + item.buyingItemTotalPrice, 0);
+    // },
   },
 });
 
 export const {
   setProducts,
   setUserCart,
-  updateQuantity,
   setInsights,
   setOrders,
   setError,
@@ -149,7 +148,7 @@ export const deleteProduct = async (dispatch:any, id:any, token:any) => {
 }
 
 export const getUserCart = async (dispatch: any, token: any) => {
-  console.log("I am running");
+
   try {
     dispatch(setLoading(true));
     const res = await axios.get(`http://localhost:3001/api/getcart`, {
@@ -157,13 +156,11 @@ export const getUserCart = async (dispatch: any, token: any) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    const data = res.data;
+    const {cart} = res.data;
 
-    // Use $lookup to fetch product details
-    const cartWithProducts = await axios.post(`http://localhost:3001/api/getcartwithproducts`, { cart: data.cart });
-    console.log(cartWithProducts.data);
+    console.log("I am running");
 
-    dispatch(setUserCart(cartWithProducts.data));
+    dispatch(setUserCart(cart));
     dispatch(setLoading(false));
   } catch (error) {
     alert(error.response.data.message);

@@ -14,10 +14,9 @@ import cartRoute from "./routes/cart.route";
 import walletRouter from "./routes/wallet.route";
 import { imageUpload, upload } from "./utils/imageUpload";
 import { getInsights } from "./utils/insights";
-import { isAuthenticated } from "./utils/auth.middleware";
-import { Cart } from "./Models/cart.model";
-import { Product } from "./Models/product.model";
-import { getcartwithproducts } from "./Controllers/cart.controller";
+// import { isAuthenticated } from "./utils/auth.middleware";
+// import { Cart } from "./Models/cart.model"; // Ensure all models are imported
+import { Product } from "./Models/product.model"; // Ensure all models are imported
 
 dotenv.config(); // Load environment variables from .env
 
@@ -79,24 +78,21 @@ app.use("/api", walletRouter);
 app.post("/api/image/upload", upload.array("my_files"), imageUpload);
 
 app.post('/api/getcartwithproducts', async (req, res) => {
-  const { cart } = req.body;
+  const {cart} = req.body;
 
   if (!cart) {
     return res.status(400).json({ message: 'Cart not found' });
   }
 
-  try {
-    const updatedCart = await getcartwithproducts(cart);
+  const productIds = cart.items.map((item: any) => item.productId);
 
-    if (updatedCart === "not a cart") {
-      return res.status(400).json({ message: 'Cart not found' });
-    }
+  const products = await Product.find({ _id: { $in: productIds } }).exec();
 
-    res.json(updatedCart);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+  cart.items = cart.items.map((item: any) => {
+    const product = products.find(p => p._id.toString() === item.productId.toString());
+    return {...item, product };
+  });
+  res.json(cart);
 });
 
 io.on("connection", socket => {
