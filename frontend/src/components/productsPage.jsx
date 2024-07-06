@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { addToCart } from "../redux/userActionSlice";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import {Toast} from "primereact/toast"
 
 const ProductDetail = () => {
 
@@ -11,15 +12,22 @@ const ProductDetail = () => {
   const id = location.slice(location.lastIndexOf('/') + 2);
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
+  const toast = useRef()
   
   const product = products.find(pro => pro._id == id)
 
   const handleAddToCart = () => {
     addToCart(dispatch, token, product._id, buyingQuantity )
+    showToast()
+  }
+
+  const showToast = () => {
+    toast.current.show({severity:'success', summary: 'Best choice 😍', detail: 'Product added to cart', life: 3000});
   }
 
   return (
     <div className="flex flex-col md:flex-row bg-off-white p-4">
+      <Toast ref={toast}/>
       <div className="md:w-1/2">
         <div className="relative">
           <img 
