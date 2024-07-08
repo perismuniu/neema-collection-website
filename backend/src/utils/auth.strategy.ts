@@ -1,5 +1,6 @@
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
 import * as bcrypt from "bcrypt"
 import { UserModel as User } from "../Models/user.model";
@@ -51,6 +52,31 @@ passport.use(new JwtStrategy(opts, async (payload: any, done: any) => {
     return done(error);
   }
 }));
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID!,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  callbackURL: "http://localhost:3001/auth/google/callback"
+},
+async (token, tokenSecret, profile, done) => {
+  try {
+    let user = await User.findOne({ googleId: profile.id });
+    if (!user) {
+      user = new User({
+        googleId: profile.id,
+        username: profile.displayName,
+        email: profile.emails? profile.emails[0].value : '',
+        isAdmin: false,
+        wallet: 0
+      });
+      await user.save();
+    }
+    return done(null, user);
+  } catch (err) {
+    return done(err, false);
+  }
+}));
+
 
 //serialize user
 passport.serializeUser((user: any, done) => {

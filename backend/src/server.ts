@@ -14,8 +14,6 @@ import cartRoute from "./routes/cart.route";
 import walletRouter from "./routes/wallet.route";
 import { imageUpload, upload } from "./utils/imageUpload";
 import { getInsights } from "./utils/insights";
-// import { isAuthenticated } from "./utils/auth.middleware";
-// import { Cart } from "./Models/cart.model"; // Ensure all models are imported
 import { Product } from "./Models/product.model"; // Ensure all models are imported
 
 dotenv.config(); // Load environment variables from .env
@@ -76,6 +74,11 @@ app.use("/api", orderRouter);
 app.use("/api", cartRoute);
 app.use("/api", walletRouter);
 app.post("/api/image/upload", upload.array("my_files"), imageUpload);
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/auth/login' }), (req, res) => {
+  res.redirect('http://localhost:5173');
+});
 
 app.post('/api/getcartwithproducts', async (req, res) => {
   const {cart} = req.body;
