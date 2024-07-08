@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import passport from '../utils/auth.strategy';
+import passport from './auth.strategy';
 
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
 

@@ -2,7 +2,7 @@
 import request from 'supertest';
 
 import { UserModel as User } from '../Models/user.model';
-import app from '../index';
+import app from '../server';
 
 
 describe('API Tests', () => {
