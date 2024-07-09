@@ -124,7 +124,6 @@ io.on("connection", socket => {
         percentage: `${insightData.totalProductPercentageChange > 0 ? "+" : ""}${insightData.totalProductPercentageChange}%`,
       }
     ]
-
     socket.emit("insight_data", insights)
   });
 
