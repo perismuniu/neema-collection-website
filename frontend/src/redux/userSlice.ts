@@ -56,7 +56,6 @@ export const login = async (loginData:any, dispatch:any) => {
     
     return user
   } catch (error) {
-    console.log(error.response.data);
     dispatch(setLoginLoading(false))
     dispatch(setLoginError(error.response.data))
   }
