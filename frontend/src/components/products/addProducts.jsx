@@ -16,7 +16,7 @@ const AddProducts = () => {
 
 
   const showMessage = (event, ref, severity) => {
-    const label = event.response.data.message;
+    const label = event //.data.message;
 
     ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
 };
@@ -77,14 +77,14 @@ const AddProducts = () => {
       );
       console.log(res);
       if (res.status === 200) {
-        showMessage(res.data, toastCenter, "success")
+        showMessage(res.data.message, toastCenter, "success")
         setData({});
         setFiles([]);
         setRes([]);
       }
     } catch (error) {
       console.log(error);
-      showMessage(error, toastCenter, "error") //error.response.data.message
+      showMessage("Error durring upload!", toastCenter, "error") //error.response.data.message
     }
   };
 
@@ -129,7 +129,7 @@ const AddProducts = () => {
           {activeInput === "image" && files.length > 0 && (
             <button
               onClick={handleUpload}
-              className="bg-green-500 py-3 px-6 mt-1 rounded-lg text-white font-extrabold text-2xl"
+              className="bg-green-500 py-1 px-2 mt-1 rounded-lg text-white font-extrabold text-xl"
               disabled={loading}
             >
               {loading ? 'Uploading...' : 'Upload'}
@@ -154,8 +154,10 @@ const AddProducts = () => {
               id="description"
               placeholder="Add product description"
               value={data.description || ""}
-              onChange={(e) =>
+              onChange={(e) => {
                 setData({ ...data, description: e.target.value })
+                e.target.value =""
+              }
               }
               onClick={() => setActiveInput("description")}
             />
