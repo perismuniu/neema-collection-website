@@ -31,18 +31,20 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const user = await login(loginData, dispatch);
-    if (loginError) {
-      showMessage(loginError, ErrorToast, "error");
-    }
-    if (user) {
-      showMessage("Successfully logged in", ErrorToast, "success");
-      if (user.isAdmin) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
+    await login(loginData, dispatch).then((user) => {
+      if (loginError) {
+        showMessage(loginError, ErrorToast, "error");
       }
-    }
+      console.log(loginError)
+      if (user) {
+        showMessage("Successfully logged in", ErrorToast, "success");
+        if (user.isAdmin) {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }
+    })
   };
 
   const handleGoogleLogin = () => {

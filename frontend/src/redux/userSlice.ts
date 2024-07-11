@@ -50,14 +50,15 @@ export const login = async (loginData:any, dispatch:any) => {
     const res = await axios.post("http://localhost:3001/api/auth/login", loginData);
     const token = res.data.token;
     const user = res.data.userData; // assuming the API returns the user data without password
+    dispatch(setLoginLoading(false))
     dispatch(setCredentials(token));
     dispatch(setUser(user));
-    dispatch(setLoginLoading(false))
+    
     return user
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
     dispatch(setLoginLoading(false))
-    dispatch(setLoginError(error.response))
+    dispatch(setLoginError(error.response.data))
   }
 }
 

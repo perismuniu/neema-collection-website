@@ -54,18 +54,25 @@ export const register = async (req: any, res: Response) => {
 
 
 export const login = (req: any, res: Response) => {
+    console.log("Request received 1")
     passport.authenticate('local', (err: any, user: any, info: any) => {
+        console.log("Request received 2")
         if (err) {
             return res.status(500).json({message: "Error authenticating user!"});
         }
+        console.log("Request received 3")
         if (!user) {
+            console.log("Request received 3.5")
             return res.status(401).send(info.message || 'User not found');
         }
+        console.log("Request received 4")
         req.logIn(user, (err: any) => {
+            console.log("Request received 5")
             if (err) {
-                return res.status(500).json({message: err.message});
+                return res.status(500).json({message: err});
             }
 
+            console.log("Request received 6")
             const token = jwt.sign({ sub: user._id }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '1h' } as any);
             req.session.jwt = token;
 
