@@ -1,17 +1,42 @@
 //dashboard.jsx
 import {  useEffect } from "react";
-import { useDispatch } from "react-redux";
- import { Link, Outlet, useLocation } from "react-router-dom";
-import { inSight } from "../redux/userActionSlice";
+import { useDispatch, useSelector } from "react-redux";
+ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { inSight, setUserCart } from "../redux/userActionSlice";
+import axios from "axios";
+import { setCredentials, setUser } from "../redux/userSlice";
+import { persistor } from "../redux/store";
 
 
 const Dashboard = () => {
   const dispatch = useDispatch()
-  const location = useLocation().pathname
+  const location = useLocation().pathnam
+  const token = useSelector((state) => state.token);
+  const navigate = useNavigate()
 
   useEffect(() => {
     inSight(dispatch)
   }, []);
+
+
+  const handleLogout = async () => {
+    try {
+      await axios.get("http://localhost:3001/api/auth/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(() => {
+        dispatch(setUserCart({})); // clear user cart
+      dispatch(setCredentials(null)); // clear token
+      dispatch(setUser(null)); // clear user data
+      persistor.purge(); // clear persisted state
+      navigate("/", {replace: true})
+      })
+    } catch (error) {
+      alert("Error Logging out!")
+    }
+  }
+
 
   const components = [
 
@@ -43,7 +68,7 @@ const Dashboard = () => {
             </ul>
           </div>
           <div className="flex items-center justify-center mb-5">
-            <button className="bg-light-pink text-white py-3 px-6 rounded-2xl">
+            <button className="bg-light-pink text-white py-3 px-6 rounded-2xl" onClick={handleLogout()}>
               Logout
             </button>
           </div>
