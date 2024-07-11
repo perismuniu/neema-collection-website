@@ -68,7 +68,7 @@ const Dashboard = () => {
             </ul>
           </div>
           <div className="flex items-center justify-center mb-5">
-            <button className="bg-light-pink text-white py-3 px-6 rounded-2xl" onClick={handleLogout()}>
+            <button className="bg-light-pink text-white py-3 px-6 rounded-2xl" onClick={ () => handleLogout()}>
               Logout
             </button>
           </div>

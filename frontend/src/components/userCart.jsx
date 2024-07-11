@@ -19,7 +19,7 @@ const ShoppingCart = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log(" I am runnig")
+    console.log(" I am runnig")
     getUserCart(dispatch, token);
   }, []);
 

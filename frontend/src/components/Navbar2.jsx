@@ -51,7 +51,7 @@ const Navbar = () => {
       } catch (error) {
         alert("Error Logging out!")
       }
-    }
+  }
 
 
   const totalQuantity = userCart.items?.reduce(
