@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import SignUp from "../assets/signup.png";
 import BusinessLogoBlack from "../assets/NeemaCollection-color_black.svg";
@@ -5,7 +6,6 @@ import GoogleLogo from "../assets/google.png";
 import { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { connect, useDispatch, useSelector } from "react-redux";
-// import axios from 'axios';
 import { login } from "../redux/userSlice";
 import { ProgressSpinner } from "primereact/progressspinner";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
@@ -31,11 +31,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(loginData, dispatch).then((user) => {
-      if (loginError) {
-        showMessage(loginError, ErrorToast, "error");
-      }
-      console.log(loginError)
+    if (!loginData.email || !loginData.password) {
+      showMessage("Please fill in all fields", ErrorToast, "error");
+      return;
+    }
+    try {
+      const user = await login(loginData, dispatch);
       if (user) {
         showMessage("Successfully logged in", ErrorToast, "success");
         if (user.isAdmin) {
@@ -44,7 +45,9 @@ const Login = () => {
           navigate("/");
         }
       }
-    })
+    } catch (error) {
+      showMessage(error.message || "An error occurred during login", ErrorToast, "error");
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -59,7 +62,7 @@ const Login = () => {
       </h1>
       <div className="flex flex-row mt-10 justify-center font-Outfit">
         <div className="bg-gray-light hidden flex-row w-96 rounded-l-md h-96 md:flex">
-          <img src={SignUp} key="signup" className="w-64 mx-auto my-auto h-56" />
+          <img src={SignUp} key="signup" className="w-64 mx-auto my-auto h-56" alt="Login illustration" />
           <div className="mt-32 flex flex-col content-end ml-3 px-auto py-auto">
             <button className="text-white bg-light-pink font-bold rounded-l-md text-lg px-2 py-1">
               Login
@@ -76,6 +79,7 @@ const Login = () => {
             src={BusinessLogoBlack}
             key="business-logo"
             className="w-44 mb-0 flex-2 mx-auto"
+            alt="Neema Collection logo"
           />
           <div className="flex flex-col flex-1">
             <form onSubmit={handleSubmit} className="flex flex-col">
@@ -102,6 +106,7 @@ const Login = () => {
               </label>
               <input
                 name="password"
+                type="password"
                 value={loginData.password}
                 onChange={(e) =>
                   setLoginData({ ...loginData, password: e.target.value })
@@ -109,6 +114,11 @@ const Login = () => {
                 id="password"
                 className="bg-gray-light w-52 h-6  text-left ml-24 focus:outline-none text-base rounded"
               />
+              <div className="text-right w-52 ml-24 mt-1">
+                <Link to="/auth/forgot-password" className="text-light-pink text-sm hover:underline">
+                  Forgot Password?
+                </Link>
+              </div>
               <button
                 type="submit"
                 className="bg-light-pink w-24 mt-3 h-8 mx-auto text-center text-white font-bold rounded-md text-lg py-1"
@@ -124,7 +134,7 @@ const Login = () => {
                     />
                   </span>
                 ) : (
-                  "Welcome"
+                  "Login"
                 )}
               </button>
             </form>

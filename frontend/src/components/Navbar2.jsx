@@ -4,61 +4,64 @@ import Cart from "../assets/cart.svg";
 import Person from "../assets/person.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {  setUserCart } from "../redux/userActionSlice";
+import { setUserCart } from "../redux/userActionSlice";
 import { setSearchQuery } from "../redux/searchSlice";
 import { persistor } from "../redux/store";
 import { setCredentials, setUser } from "../redux/userSlice";
 import axios from "axios";
 
-
+// Navbar component for user navigation
 const Navbar = () => {
   const [menuVisibility, setMenuVisibility] = useState(false);
   const [searchVisibility, setSearchVisibility] = useState(false);
   const searchInputRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Redux state selectors
   const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.auth.user);
+  const userCart = useSelector((state) => state.data.userCart);
+  const searchQuery = useSelector((state) => state.search.query) || "";
+
+  // User options for the dropdown menu
   const userOptions = [
     { name: "Profile", action: "/user/profile" },
     { name: "Orders", action: "/user/orders" },
     { name: "Settings", action: "/user/settings" },
     { name: "Logout", action: "/user/logout" },
   ];
-  const user = useSelector((state) => state.auth.user);
-  const userCart = useSelector((state) => state.data.userCart);
-  const searchQuery = useSelector((state) => state.search.query);
 
+  // Handle navigation to cart view
   const handleCartView = () => {
     navigate("/user/cart");
   };
 
-  console.log(Boolean(user))
-
-
+  // Handle user logout
   const handleLogout = async () => {
-      try {
-        await axios.get("http://localhost:3001/api/auth/logout", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }).then(() => {
-          dispatch(setUserCart({})); // clear user cart
-        dispatch(setCredentials(null)); // clear token
-        dispatch(setUser(null)); // clear user data
-        persistor.purge(); // clear persisted state
-        navigate("/", {replace: true})
-        })
-      } catch (error) {
-        alert("Error Logging out!")
-      }
-  }
+    try {
+      await axios.get("http://localhost:3001/api/auth/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      dispatch(setUserCart({})); // Clear user cart
+      dispatch(setCredentials(null)); // Clear token
+      dispatch(setUser(null)); // Clear user data
+      persistor.purge(); // Clear persisted state
+      navigate("/", { replace: true });
+    } catch (error) {
+      alert("Error Logging out!");
+    }
+  };
 
-
+  // Calculate total quantity of items in the cart
   const totalQuantity = userCart.items?.reduce(
     (acc, item) => acc + item.buyingQuantity,
     0
   );
 
+  // Handle search input visibility
   const handleSearchClick = () => {
     setSearchVisibility(true);
     if (searchInputRef.current) {
@@ -66,12 +69,17 @@ const Navbar = () => {
     }
   };
 
+  // Close search input when clicking outside of it
   const handleClickOutside = (event) => {
-    if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
+    if (
+      searchInputRef.current &&
+      !searchInputRef.current.contains(event.target)
+    ) {
       setSearchVisibility(false);
     }
   };
 
+  // Effect to handle click outside of the search input
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -107,7 +115,11 @@ const Navbar = () => {
           <img
             src={Person}
             className="h-10 my-auto cursor-pointer"
-            onClick={() => (user ? setMenuVisibility(!menuVisibility) : navigate("/auth/login"))}
+            onClick={() =>
+              user
+                ? setMenuVisibility(!menuVisibility)
+                : navigate("/auth/login")
+            }
             alt="User"
           />
           {menuVisibility && (
@@ -115,7 +127,6 @@ const Navbar = () => {
               <ul className="w-full">
                 {userOptions.map((option, index) => (
                   <li
-                    to={option.action}
                     className={`text-center w-full hover:bg-gray-light cursor-pointer hover:text-black ${
                       option.name === "Logout" ? "mb-3" : ""
                     }`}
@@ -141,11 +152,13 @@ const Navbar = () => {
           <img
             src={Cart}
             className="h-7 md:h-10 my-auto ml-5 mr-5 cursor-pointer"
-            onClick={() => handleCartView()}
+            onClick={handleCartView}
             alt="Cart"
           />
           <div
-            className={`absolute flex flex-col right-2 top-2 ${!user ? "hidden" : ""} bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}
+            className={`absolute flex flex-col right-2 top-2 ${
+              !user ? "hidden" : ""
+            } bg-red-700 w-4 h-4 text-sm md:right-14 md:w-5 md:h-5 text-off-white items-center text-center rounded-full`}
           >
             {totalQuantity}
           </div>

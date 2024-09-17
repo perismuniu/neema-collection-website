@@ -1,77 +1,40 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { combineReducers } from 'redux';
-import authReducer from './userSlice';
-import dataReducer from "./userActionSlice";
-import cartSlice from "./cartSlice"
-import searchSlice from './searchSlice';
-import checkoutSlice from './checkoutSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import dataReducer from "./dataSlice";
+import userReducer from "./userSlice";
+import searchReducer from "./searchSlice"; // Import the search slice
 
-// Initialize reducers
-const rootReducer = combineReducers({
-  auth: authReducer,
-  data: dataReducer,
-  cart: cartSlice,
-  search: searchSlice,
-  checkout: checkoutSlice
-});
-
-const persistConfig = {
-  key: 'root',
+const dataPersistConfig = {
+  key: "data",
   storage,
+  whitelist: ["userCart"],
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const userPersistConfig = {
+  key: "user",
+  storage,
+  whitelist: ["user", "token"],
+};
 
-const store = configureStore({
-  reducer: persistedReducer,
+const persistedDataReducer = persistReducer(dataPersistConfig, dataReducer);
+const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
+
+export const store = configureStore({
+  reducer: {
+    data: persistedDataReducer,
+    auth: persistedUserReducer,
+    search: searchReducer, // Add the search reducer here
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
     }),
 });
 
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
-export { store, persistor };
-
-
-
-
-// import { configureStore } from '@reduxjs/toolkit';
-// import { persistStore, persistReducer } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
-// import { combineReducers } from 'redux';
-// import authReducer from './userSlice';
-// import dataReducer from "./userActionSlice";
-// import cartSlice from "./cartSlice"
-// import searchSlice from './searchSlice';
-// import checkoutSlice from './checkoutSlice';
-
-// const rootReducer = combineReducers({
-//   auth: authReducer,
-//   data: dataReducer,
-//   cart: cartSlice,
-//   search: searchSlice,
-//   checkout: checkoutSlice
-// });
-
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
-
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-// const store = configureStore({
-//   reducer: persistedReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({
-//       serializableCheck: false,
-//     }),
-// });
-
-// const persistor = persistStore(store);
-
-// export { store, persistor };
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

@@ -1,20 +1,22 @@
 import { Request, Response } from "express";
 import { Product } from "../Models/product.model";
 
-export const getAllProducts = async (req: Request, res: Response) => {
 
+export const getAllProducts = async (req: Request, res: Response) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.find({}).lean();
+        
         if (products.length === 0) {
-            res.json({message: 'No products found'});
-        } else {
-            res.json(products);
+            return res.status(404).json({ message: 'No products found' });
         }
+        
+        res.json(products);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message: 'Error retrieving products'});
+        console.error('Error retrieving products:', error);
+        res.status(500).json({ message: 'Error retrieving products' });
     }
-}
+};
+
 
 export const addProduct = async (req: Request, res: Response) => {
     const {title, description, price, category, color ,stock, image, size} = req.body;

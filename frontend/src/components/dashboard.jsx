@@ -6,11 +6,12 @@ import { inSight, setUserCart } from "../redux/userActionSlice";
 import axios from "axios";
 import { setCredentials, setUser } from "../redux/userSlice";
 import { persistor } from "../redux/store";
+import React from "react";
 
 
 const Dashboard = () => {
   const dispatch = useDispatch()
-  const location = useLocation().pathnam
+  const location = useLocation().pathname
   const token = useSelector((state) => state.token);
   const navigate = useNavigate()
 

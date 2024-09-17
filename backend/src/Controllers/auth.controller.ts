@@ -11,14 +11,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const register = async (req: any, res: Response) => {
     // get user input
-    const { email, password, username, phone } = req.body;
+    const { email, password, username } = req.body;
 
     // check if all fields are filled and passes validation
-    if (!email || !password || !username || !phone) {
+    if (!email || !password || !username) {
         return res.status(400).json({ message: 'Please enter all fields' });
     }
     // check if name only conatins letters and sapces, password length greater than 6, email is valid and phone number is valid
-    if (!/^[a-zA-Z\s]*$/.test(username) || password.length < 6 || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email) || !/^\d{10}$/.test(phone)) {
+    if (!/^[a-zA-Z\s]*$/.test(username) || password.length < 6 || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email) /* || !/^\d{10}$/.test(phone)*/) {
         return res.status(400).json({ message: 'Invalid input' });
     }
     // check if user exist in the database

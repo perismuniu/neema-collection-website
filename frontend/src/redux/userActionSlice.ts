@@ -106,13 +106,13 @@ export const inSight = (dispatch:any)=> {
 export const getProducts = async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
-    const res = await axios.get(`http://localhost:3001/api/products`);
+    const res = await axios.get(`http://localhost:3000/api/products`);
     console.log("Getting products", res.data);
     const data = res.data;
     dispatch(setProducts(data));
     dispatch(setLoading(false));
   } catch (error) {
-    dispatch(error(error.response));
+    dispatch(setError(error.response.data));
     dispatch(setLoading(false));
   }
 };

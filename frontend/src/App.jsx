@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
 import Login from "./components/login";
@@ -11,7 +11,6 @@ import Notifications from "./components/dashboard/notifications";
 import Products from "./components/dashboard/products";
 import AddProducts from "./components/products/addProducts";
 import ProductList from "./components/products/productlist";
-import Checkout from "./components/Checkout";
 import Orders from "./components/orders";
 import OrderList from "./components/Orderlist";
 import Settings from "./components/Settings"
@@ -19,18 +18,26 @@ import { useSelector } from "react-redux";
 import ShoppingCart from "./components/userCart";
 import ProductDetail from "./components/productsPage";
 import Payment from "./components/payment";
+import React from "react";
+import ForgotPassword from "./components/forgotPassword";
+import ResetPassword from "./components/resetPassword";
+import VerifyResetCode from "./components/verifyResetCode";
+
 
 function App() {
   
-  const user = useSelector(state => state.auth.user)
+  const user = useSelector((state) => state.auth.user)
+
+  console.log (user)
 
   console.log(`App.jsx user verification ${Boolean(user)}`)
+  // const navigate = useNavigate()
 
 
 function RequireAdmin ({ children }) {
 
   if (!user.isAdmin ) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/auth/login" replace={true} />
   }
   return children;
 }
@@ -50,6 +57,9 @@ function RequireAuth({ children }) {
         <Routes>
           <Route path="/auth/signup" element={<Auth />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/verify-reset-code" element={<VerifyResetCode />} />
           <Route path="/dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} >
             <Route
               index
@@ -74,7 +84,7 @@ function RequireAuth({ children }) {
           </Route>            
           <Route path="/" element={<Homepage />} />
           <Route path="cart/checkout" element={ <RequireAuth> <Payment /></RequireAuth> } />
-          <Route path="orderlist" element={<RequireAuth><OrderList/></RequireAuth>} />
+          <Route path="orderlist" element={<RequireAuth><OrderList OrderDate={undefined} OrderNumber={undefined} Price={undefined} image={undefined} Title={undefined} Status={undefined}/></RequireAuth>} />
           <Route path="orders" element={<RequireAuth><Orders /></RequireAuth>} />
           <Route path="user/settings" element={<RequireAuth><Settings /></RequireAuth>} />
           <Route path="user/cart" element={<RequireAuth><ShoppingCart /></RequireAuth>} />
@@ -85,10 +95,5 @@ function RequireAuth({ children }) {
   );
 }
 
-
-// Higher-order component to protect routes
-
-
-// Higher-order component to protect admin routes
 
 export default App;

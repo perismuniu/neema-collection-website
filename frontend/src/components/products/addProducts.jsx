@@ -75,7 +75,7 @@ const AddProducts = () => {
           },
         }
       );
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         showMessage(res.data.message, toastCenter, "success")
         setData({});

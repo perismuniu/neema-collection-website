@@ -14,14 +14,16 @@ import cartRoute from "./routes/cart.route";
 import walletRouter from "./routes/wallet.route";
 import { imageUpload, upload } from "./utils/imageUpload";
 import { getInsights } from "./utils/insights";
-import { Product } from "./Models/product.model"; // Ensure all models are imported
+import { Product } from "./Models/product.model";
+import morgan from "morgan"
 
 dotenv.config(); // Load environment variables from .env
 
 const app: Application = express();
 const port = process.env.PORT || 3000;
 
-const server = http.createServer(app); // Ensure server uses express app
+const server = http.createServer(app); 
+app.use(morgan('dev'))
 
 const db_connect = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@neema.acaijrr.mongodb.net/?retryWrites=true&w=majority&appName=Neema`;
 
@@ -130,7 +132,7 @@ io.on("connection", socket => {
   socket.on("disconnect", () => console.log("User disconnected", socket.id));
 });
 
-mongoose.connect(db_connect)
+mongoose.connect('mongodb://127.0.0.1:27017/neema')
   .then(() => console.log("Connected to MongoDB"))
   .then(() => server.listen(port, () => {
     console.log(`Server running on port ${port} http://localhost:${port}`);
