@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as io from "socket.io-client";
-import { persistor } from "./store";
-import { setCredentials, setUser } from "./userSlice";
 
-const socket = io.connect("http://localhost:3001");
+// const socket = io.connect("http://localhost:3001");
 
 const dataSlice = createSlice({
   name: "data",
@@ -61,17 +59,6 @@ const dataSlice = createSlice({
     setIsSuccess: (state, action) => {
       state.isSuccess = action.payload;
     },
-    // updateQuantity: (state, action) => {
-    //   const { productId, quantity } = action.payload;
-    //   const item = state.userCart.items.find((item) => item.productId === productId);
-    //   if (item) {
-    //     const quant = quantity < 1 ? 1 : quantity
-    //     item.buyingQuantity = quant;
-
-    //       item.buyingItemTotalPrice = item.product.price * quant; // update this line
-    //   }
-    //   state.userCart.buyingTotalPrice = state.userCart.items.reduce((total, item) => total + item.buyingItemTotalPrice, 0);
-    // },
   },
 });
 
@@ -85,23 +72,23 @@ export const {
   setLoading
 } = dataSlice.actions;
 
-export const inSight = (dispatch:any)=> {
-  const interval = setInterval(async () => {      
-    try {
-      socket.emit("get_insight_data");
-      socket.on("insight_data", (response) => {
-          dispatch(setInsights(response));
-        })
-    } catch (error) {
-      setError(error.message);
-    }
-  }, 3000);
+// export const inSight = (dispatch:any)=> {
+//   const interval = setInterval(async () => {      
+//     try {
+//       socket.emit("get_insight_data");
+//       socket.on("insight_data", (response) => {
+//           dispatch(setInsights(response));
+//         })
+//     } catch (error) {
+//       setError(error.message);
+//     }
+//   }, 3000);
 
-  return () => {
-    clearInterval(interval);
-    socket.off("get_all_products_response");
-  };
-}
+//   return () => {
+//     clearInterval(interval);
+//     socket.off("get_all_products_response");
+//   };
+// }
 
 export const getProducts = async (dispatch: any) => {
   try {
@@ -147,29 +134,6 @@ export const deleteProduct = async (dispatch:any, id:any, token:any) => {
   }
 }
 
-export const getUserCart = async (dispatch: any, token: any) => {
-
-  try {
-    dispatch(setLoading(true));
-    const res = await axios.get(`http://localhost:3001/api/getcart`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const {cart} = res.data;
-
-    console.log("I am running");
-
-    dispatch(setUserCart(cart));
-    dispatch(setLoading(false));
-  } catch (error) {
-    alert(error.response.data.message);
-    dispatch(setError(error.response.data));
-    dispatch(setLoading(false));
-  }
-};
-
-
 export const addToCart = async (
   dispatch: any,
   token: any,
@@ -189,26 +153,11 @@ export const addToCart = async (
       }
     );
     const data = res.data;
-    console.log(data);
+    // console.log(data);
     dispatch(setUserCart(data));
   } catch (error) {
     console.log(error);
   }
 };
-
-export const getOrders = async (dispatch: any, token: any) => {
-  try {
-    const res = await axios.get(`http://localhost:3001/api/orders`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = res.data;
-    console.log(data)
-    dispatch(setOrders(data));
-  } catch (error) {
-    
-  }
-}
 
 export default dataSlice.reducer;

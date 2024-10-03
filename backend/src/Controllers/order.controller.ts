@@ -1,83 +1,89 @@
 import { Request, Response } from "express";
-import { order as Order, IOrder } from "../Models/order.model";
-import { Cart } from "../Models/cart.model";
-import getOAuthToken from "../utils/mpesaAuth";
+import { IOrder, Order } from "../Models/order.model";
 import { Product } from "../Models/product.model";
+import getOAuthToken, { mpesaStkPush } from "../utils/mpesaAuth";
+import { checkMtnGhanaPaymentStatus } from "../utils/mtn";
+import { emitNotification, NotificationTypes } from "../utils/notification";
 
-/**
- * Creates a new order with the provided products for the authenticated user.
- *
- * @param {Request} req - The HTTP request object containing the user and products.
- * @param {Response} res - The HTTP response object to send the result.
- * @return {Promise<void>} A promise that resolves when the order is created successfully or rejects with an error.
- */
+
+const initiateMpesaPayment = async (phone: string, amount: number, orderId: string) => {
+  try {
+    // const token = await getOAuthToken();
+    // const response: any = await mpesaStkPush(amount, token);
+    return {
+      MerchantRequestID: "123456789",//response.MerchantRequestID,
+      CheckoutRequestID: "987654321",//response.CheckoutRequestID,
+    };
+  } catch (error) {
+    console.error("Error initiating Mpesa payment:", error);
+    throw error;
+  }
+};
+
+const checkMpesaPaymentStatus = async (checkoutRequestId: string) => {
+  // Implement the logic to check the Mpesa payment status
+  // This might involve making an API call to Mpesa to check the status
+  // For now, we'll return a mock status
+  const statuses = ["Success", "Failed", "Pending"];
+  return statuses[1];
+};
+
 export const createOrder = async (req: any, res: Response) => {
-  const user = req.user
-  const { paymentMethod, deliveryType } = req.body
-  // get all data from cart and proceed to payment checkout, confirm payment and place order
+  const user = req.user;
+  const { items, shippingInfo, total, paymentMethod, deliveryType } = req.body;
 
   try {
-    const userId = user._id;
-
-    const cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-
-    const products = cart.items.map((item: any) => {
-      return {
-        product: item.productId,
-        itemTotalPrice: item.buyingQuantity,
-        quantity: item.buyingQuantity
-      };
-    });
-
-    if (products.length < 1) {
-      return res.status(404).json({ message: "Cart is empty" });
-    }
-
-    // check if user address, phone number exist. if yes then continue to payment checkout. if not tell user to fill it in the settings
-
-    if (!user.address || !user.phone) {
-      return res.status(404).json({ message: "Please fill in your address and phone number" });
-    }
-
-    let MPesa_token
-
-    // Call the function
-    getOAuthToken().then(token => {
-      MPesa_token = token
-    }).catch((error: any) => {
-      console.error('Failed to get OAuth token:', error);
-      throw error;
-    });
-
-    // check if user can buy the quantity of selected products
-    for (const product of products) {
-      const productInStock = await Product.find(product.product);
+    // Check stock availability
+    for (const item of items) {
+      const productInStock = await Product.findById(item.product);
       if (!productInStock) {
-        return res.status(404).json({ message: `Not enough stock for product ${product.product}` });
+        return res.status(404).json({ message: `Product not found` });
       }
-    }
-
-    if (paymentMethod === "wallet") {
-      if (user.wallet < cart.buyingTotalPrice) {
-        return res.status(404).json({ message: "Insufficient funds in your wallet. Deposits funds to your wallet or kindly use cash on delivery method!" });
+      const variant = productInStock.variants.find((v) => v.color === item.color);
+      if (!variant) {
+        return res.status(404).json({ message: `Variant not found` });
       }
-      // deduct payment from user's wallet
-      await deductPaymentFromWallet(user, cart.buyingTotalPrice);
+      const stockItem = variant.stock.find((s) => s.size === item.size);
+      if (!stockItem || stockItem.quantity < item.quantity) {
+        return res.status(404).json({ message: `Not enough stock for product ${item.product}` });
+      }
     }
 
     const newOrder = new Order({
-      user: user,
-      items: products,
-      total: cart.buyingTotalPrice,
-      deliveryType: deliveryType,
-      paymentMethod: paymentMethod,
+      user: user._id,
+      items,
+      total,
+      shippingInfo,
+      deliveryType,
+      paymentMethod,
+      status: 'pending',
     });
 
-    await newOrder.save();
+    if (paymentMethod === "mpesa") {
+      try {
+        const mpesaResponse = await initiateMpesaPayment(user.phone, total, newOrder._id);
+        newOrder.mpesaRequestId = mpesaResponse.MerchantRequestID;
+        newOrder.mpesaCheckoutRequestId = mpesaResponse.CheckoutRequestID;
+        newOrder.status = 'pending_payment';
+        await newOrder.save();
+
+      } catch (error) {
+        console.error("Error initiating Mpesa payment:", error);
+        return res.status(500).json({ message: "Error initiating Mpesa payment" });
+      }
+    }
+
+    const savedOrder = await newOrder.save();
+
+    // Update product stock
+    await updateProductStock(savedOrder);
+
+    // Update user orders
+    user.orders = [...user.orders, savedOrder._id];
+
+    await user.save();
+
+
     res.status(201).json({ message: "Order created successfully", order: newOrder });
   } catch (error) {
     console.error(error);
@@ -85,18 +91,73 @@ export const createOrder = async (req: any, res: Response) => {
   }
 };
 
-const deductPaymentFromWallet = async (user: any, amount: number) => {
-  user.wallet -= amount;
-  await user.save();
+const updateProductStock = async (order: any) => {
+  for (const item of order.items) {
+    const product = await Product.findById(item.product);
+    if (product) {
+      const variant = product.variants.find((v) => v.color === item.color);
+      if (variant) {
+        const stockItem = variant.stock.find((s) => s.size === item.size);
+        if (stockItem) {
+          stockItem.quantity -= item.quantity;
+          await product.save();
+        }
+      }
+    }
+  }
 };
 
-/**
- * Retrieves all orders for the authenticated user.
- *
- * @param {Request} req - The HTTP request object containing the authenticated user.
- * @param {Response} res - The HTTP response object to send the result.
- * @return {Promise<void>} A promise that resolves when the orders are retrieved successfully or rejects with an error.
- */
+export const checkPaymentStatus = async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  
+  try {
+    const order = await Order.findById(orderId).populate('user');
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    
+    if (order.status === "pending_payment") {
+      let paymentStatus;
+      
+      if (order.paymentMethod === "mpesa") {
+        paymentStatus = await checkMpesaPaymentStatus(order.mpesaCheckoutRequestId as string);
+      } else if (order.paymentMethod === "mtn_ghana") {
+        paymentStatus = await checkMtnGhanaPaymentStatus(order.mtnGhanaTransactionId as string);
+      }
+      
+      if (paymentStatus === "Success") {
+        order.status = "completed";
+        await order.save();
+        await updateProductStock(order);
+        
+        // Emit order notification
+        emitNotification({
+          type: NotificationTypes.ORDER,
+          title: 'New Order Received',
+          content: `New order #${order._id} received from ${(order.user as any).username}`,
+          orderData: {
+            orderId: order._id,
+            customerName: (order.user as any).username,
+            items: order.items as any,
+            totalAmount: order.total,
+            paymentMethod: order.paymentMethod,
+            status: order.status
+          }
+        });
+      } else if (paymentStatus === "Failed") {
+        order.status = "cancelled";
+        await order.save();
+      }
+    }
+    
+    res.status(200).json({ status: order.status });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 export const getOrders = async (req: any, res: Response) => {
   try {
     const orders: IOrder[] = await Order.find({ user: req.user._id });
@@ -108,13 +169,7 @@ export const getOrders = async (req: any, res: Response) => {
   }
 };
 
-/**
- * Updates an order by its ID with the provided data.
- *
- * @param {Request} req - The HTTP request object containing the order ID and updated data.
- * @param {Response} res - The HTTP response object to send the result.
- * @return {Promise<void>} A promise that resolves when the order is updated successfully or rejects with an error.
- */
+
 export const updateOrder = async (req: Request, res: Response) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true })!;
@@ -129,13 +184,7 @@ export const updateOrder = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-/**
- * Retrieves a specific order by its ID.
- *
- * @param {Request} req - The HTTP request object containing the order ID.
- * @param {Response} res - The HTTP response object to send the result.
- * @return {Promise<void>} A promise that resolves when the order is retrieved successfully or rejects with an error.
- */
+
 export const getOderById = async (req: Request, res: Response) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -148,13 +197,7 @@ export const getOderById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-/**
- * Deletes an order by its ID.
- *
- * @param {Request} req - The HTTP request object containing the order ID.
- * @param {Response} res - The HTTP response object to send the result.
- * @return {Promise<void>} A promise that resolves when the order is deleted successfully or rejects with an error.
- */
+
 export const deleteOrder = async (req: Request, res: Response) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id);

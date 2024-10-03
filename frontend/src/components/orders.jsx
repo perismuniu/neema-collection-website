@@ -1,65 +1,55 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import api from './utils/api';
 
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [orders, setOrders] = useState([]);
-    const [isLoading, setIsLoading] = useState(false)
-    const token = useSelector(state => state.data.token)
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-    useEffect(() => {
-        const getOrders = async () => {
-          setIsLoading(true);
-            await axios.get('http://localhost:3001/api/orders', {
-              headers: `Bearer ${token}`
-            })
-             .then(res => {
-                setIsLoading(false);
-                setOrders(res.data);
-              })
-           .catch(err => {
-              setIsLoading(false);
-              alert(err.message);
-              console.log(err);
-            });
-        };
-        getOrders();
-      }, []);
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get('/orders');
+      setOrders(response.data.orders);
+    } catch (error) {
+      toast.error('Failed to fetch orders. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      console.log(orders)
+  if (loading) {
+    return <div className="text-center mt-10">Loading orders...</div>;
+  }
 
   return (
-    <div>
-      <h1>Orders</h1>
-      {isLoading && <div>Loading...</div>}
-      {!isLoading && orders.length === 0 && <div>No orders found</div>}
-      {!isLoading && orders.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.customer}</td>
-                <td>{order.total}</td>
-                <td>{order.status}</td>
-                <td>VIJJ</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="container mx-auto mt-10">
+      <h2 className="text-2xl font-bold mb-5">Your Orders</h2>
+      {orders.length === 0 ? (
+        <p>You haven't placed any orders yet.</p>
+      ) : (
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div key={order._id} className="border p-4 rounded">
+              <h3 className="font-bold">Order ID: {order._id}</h3>
+              <p>Total: ${order.total}</p>
+              <p>Status: {order.status}</p>
+              <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+              <h4 className="font-bold mt-2">Items:</h4>
+              <ul>
+                {order.items.map((item, index) => (
+                  <li key={index}>{item.title} - Quantity: {item.quantity}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;

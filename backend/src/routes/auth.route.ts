@@ -4,6 +4,7 @@ import {
   login,
   logout,
   register,
+  verifyToken,
 } from "../Controllers/auth.controller";
 import { isAuthenticated } from "../utils/auth.middleware";
 const fs = require("fs").promises;
@@ -17,8 +18,10 @@ const router = Router();
 
 router.post("/auth/register", register);
 router.post("/auth/login", login);
-router.get("/auth/logout", logout);
+router.post("/auth/logout", isAuthenticated, logout);
 router.get("/auth/profile", isAuthenticated, dashboard);
+
+router.get('/verify-token', isAuthenticated, verifyToken);
 // Google OAuth routes
 // router.get(
 //   '/auth/google/callback',

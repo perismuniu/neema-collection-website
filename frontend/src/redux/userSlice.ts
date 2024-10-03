@@ -43,24 +43,6 @@ const userSlice = createSlice({
 
 export const { setCredentials, setUser, setLoginError, setLoginLoading, setLogout } = userSlice.actions;
 
-export const login = async (loginData:any, dispatch:any) => {
-
-  try {
-    dispatch(setLoginLoading(true))
-    const res = await axios.post("http://localhost:3000/api/auth/login", loginData);
-    const token = res.data.token;
-    const user = res.data.userData; // assuming the API returns the user data without password
-    dispatch(setLoginLoading(false))
-    dispatch(setCredentials(token));
-    dispatch(setUser(user));
-    
-    return user
-  } catch (error) {
-    dispatch(setLoginLoading(false))
-    dispatch(setLoginError(error.response.data))
-  }
-}
-
 
 
 export default userSlice.reducer;

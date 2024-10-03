@@ -1,12 +1,15 @@
-import { Router } from "express";
-import { isAuthenticated } from "../utils/auth.middleware";
-import { addToCart, getCart, removeFromCart, handleQuantityChange } from "../Controllers/cart.controller";
 
-const cartRoute = Router();
+import express from 'express';
+import { isAuthenticated } from '../utils/auth.middleware';
+import { addToCart, clearCart, getCart, removeFromCart, updateCartItem } from '../Controllers/cart.controller';
 
-cartRoute.post("/addtocart/:productId", isAuthenticated, addToCart);
-cartRoute.get("/getcart", isAuthenticated, getCart);
-cartRoute.delete("/removefromcart/:itemId", isAuthenticated, removeFromCart);
-cartRoute.put("/updatequantity", isAuthenticated, handleQuantityChange);
 
-export default cartRoute;
+const router = express.Router();
+
+router.get('/cart', isAuthenticated, getCart);
+router.post('/cart', isAuthenticated, addToCart);
+router.put('/cart', isAuthenticated, updateCartItem);
+router.delete('/cart/:productId', isAuthenticated, removeFromCart);
+router.delete('/cart', isAuthenticated, clearCart);
+
+export default router;

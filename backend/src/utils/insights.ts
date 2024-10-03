@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { UserModel } from "../Models/user.model"
-import { order } from "../Models/order.model"
+import { Order } from "../Models/order.model"
 import { Product } from "../Models/product.model"
 
 const currentMonth = new Date()
@@ -8,7 +8,7 @@ const lastMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() -
 
 export const getInsights = async () => {
     const products = await Product.find({})
-    const orders = await order.find({})
+    const orders = await Order.find({})
     const users = await UserModel.find({})
 
     const currentMonthOrders = _.filter(orders, (order:any) => {

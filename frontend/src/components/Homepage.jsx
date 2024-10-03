@@ -1,55 +1,64 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getProducts, getUserCart } from "../redux/userActionSlice";
-import ProductCard from './products/productcard';
-import ProductItem from './products/productitem';
-import Footer from "./Footer";
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setSearchQuery } from '../redux/slices';
+import ProductCard, { FeaturedProduct } from './productCard';
+import ErrorBoundary from './utils/errorBoundary';
+import api from './utils/api'
 
-const Homepage = () => {
+const HomePage = () => {
   const dispatch = useDispatch();
-  const products = useSelector(state => state.data.products);
-  const user = useSelector(state => state.auth.user);
-  const token = useSelector(state => state.auth.token);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getProducts(dispatch)
-      if (user) {
-        await getUserCart(dispatch, token)
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/products');
+        setProducts(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.response?.data?.message || 'An error occurred while fetching products');
+        setLoading(false);
       }
     };
-    fetchData();
-  }, [dispatch, user, token]);
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-pink-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 text-red-600">
+        <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-off-white min-h-screen px-6 lg:px-48 bg-cover">
-      <div className="container mx-auto">
-        {products && products.length > 0 && (
-          <ProductCard 
-            key={products[0]._id}
-            image={products[0].image}
-            title={products[0].title}
-            description={products[0].description}
-            buttonText="SHOP NOW"
-          />
-        )}
-
-        <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-4 bg-pink-50">
-          {products.map((product) => (
-            <ProductItem
-              key={product._id}
-              image={product.image}
-              name={product.title}
-              id={product._id}
-              price={product.price}
-              buttonText="SHOP NOW"
-            />
-          ))}
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <ErrorBoundary>
+        <FeaturedProduct product={products[0]} />
+      </ErrorBoundary>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Our Products</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+        {products.length > 0 ? products.map((product) => (
+          <ErrorBoundary key={product._id}>
+            <ProductCard product={product} />
+          </ErrorBoundary>
+        )): <div>No products found!</div>}
       </div>
-      <Footer />
     </div>
   );
 };
 
-export default Homepage;
+export default HomePage;

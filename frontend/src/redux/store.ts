@@ -1,9 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import dataReducer from "./dataSlice";
-import userReducer from "./userSlice";
-import searchReducer from "./searchSlice"; // Import the search slice
+import productsSlice from "./productsSlice";
+import { authReducer, cartReducer, productReducer, searchReducer } from "./slices";
 
 const dataPersistConfig = {
   key: "data",
@@ -11,20 +10,28 @@ const dataPersistConfig = {
   whitelist: ["userCart"],
 };
 
-const userPersistConfig = {
-  key: "user",
+const productPersistConfig = {
+  key: "product",
   storage,
-  whitelist: ["user", "token"],
+  whitelist: ["product", "token"],
 };
 
-const persistedDataReducer = persistReducer(dataPersistConfig, dataReducer);
-const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  whitelist: ["token", "user"],
+};
+
+const persistedProductReducer = persistReducer(productPersistConfig, productReducer);
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    data: persistedDataReducer,
-    auth: persistedUserReducer,
-    search: searchReducer, // Add the search reducer here
+    products: productsSlice,
+    product: persistedProductReducer,
+    cart: cartReducer,
+    search: searchReducer,
+    auth: persistedAuthReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
