@@ -35,3 +35,23 @@ const handleUpload = async (file: any) => {
     throw error;
   }
 };
+
+export const cleanupImages = async (req: any, res: any) => {
+  const { urls } = req.body;
+  
+  try {
+    const deletePromises = urls.map((url: string) => {
+      // Extract public_id from the Cloudinary URL
+      const publicId = url.split('/').pop()?.split('.')[0];
+      if (!publicId) throw new Error('Invalid URL');
+      
+      return v2.uploader.destroy(publicId);
+    });
+    
+    await Promise.all(deletePromises);
+    res.status(200).json({ message: 'Images cleaned up successfully' });
+  } catch (error) {
+    console.error('Error cleaning up images:', error);
+    res.status(500).json({ message: 'Error cleaning up images' });
+  }
+};

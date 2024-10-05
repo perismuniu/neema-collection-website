@@ -11,7 +11,7 @@ import router from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import productRoute from "./routes/product.route";
 import cartRoute from "./routes/cart.route";
-import { imageUpload, upload } from "./utils/imageUpload";
+import { cleanupImages, imageUpload, upload } from "./utils/imageUpload";
 import { getInsights } from "./utils/insights";
 import morgan from "morgan"
 import dashboardRoutes from "./routes/stats.route"
@@ -32,8 +32,7 @@ const server = http.createServer(app);
 app.use(morgan('dev'));
 
 // Move this connection string to .env file
-const db_connect = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/neema';
-
+const db_connect = `mongodb+srv://PerisNeemaCollection:${process.env.DB_PASSWORD}@neema.acaijrr.mongodb.net/?retryWrites=true&w=majority&appName=Neema`
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
@@ -87,6 +86,7 @@ app.use("/api", productRoute);
 app.use("/api", orderRouter);
 app.use("/api", cartRoute);
 app.post("/api/image/upload", upload.array("my_files"), imageUpload);
+app.post("/api/image/cleanup", cleanupImages);
 app.use("/api/dashboard", dashboardRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api', userRoutes)

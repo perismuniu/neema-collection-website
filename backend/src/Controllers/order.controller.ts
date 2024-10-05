@@ -25,7 +25,7 @@ const checkMpesaPaymentStatus = async (checkoutRequestId: string) => {
   // This might involve making an API call to Mpesa to check the status
   // For now, we'll return a mock status
   const statuses = ["Success", "Failed", "Pending"];
-  return statuses[1];
+  return statuses[Math.floor(Math.random()*3)];
 };
 
 export const createOrder = async (req: any, res: Response) => {
